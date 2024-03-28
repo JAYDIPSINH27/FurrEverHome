@@ -29,5 +29,9 @@ public class ShelterResponseDto {
 
     private boolean verified;
 
+    private boolean accepted;
+
     private boolean rejected;
+
+    private User user;
 }

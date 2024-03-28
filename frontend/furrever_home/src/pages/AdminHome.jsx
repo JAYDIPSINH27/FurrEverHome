@@ -1,14 +1,10 @@
-import React, { useState,useEffect } from 'react'
+import React from 'react';
 
 
 import ShelterTable from '../components/Admin/ShelterTable';
-import { deleteLocalStorage, readLocalStorage, saveLocalStorage } from '../utils/helper'
 
-import pets from '../dummydata/pets'
-import axios from 'axios';
-import { toast } from "react-toastify";
 
-const AdminHome = ({children}) => {
+const AdminHome = ({ children }) => {
 
 
 
@@ -22,7 +18,7 @@ const AdminHome = ({children}) => {
 
         <div className=' sm:w-full'>
 
-          <ShelterTable/>
+          <ShelterTable />
 
         </div>
 

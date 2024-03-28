@@ -5,7 +5,8 @@
 @layer base {
   body {
     @apply font-primary text-primary text-2xl;
-    @apply bg-cream/85
+    /* @apply bg-cream/85 */
+    @apply bg-gray-100
     /* @apply lg:bg-hero lg:bg-cover lg:bg-no-repeat */
   }
   .h2 {

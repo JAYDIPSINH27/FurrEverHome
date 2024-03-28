@@ -1,11 +1,9 @@
-import React, { useState } from 'react'
 import {
-    Button,
     Dialog,
-    DialogHeader,
     DialogBody,
-    DialogFooter,
-} from "@material-tailwind/react"
+    DialogHeader
+} from "@material-tailwind/react";
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const Modal = () => {
@@ -31,15 +29,15 @@ const Modal = () => {
                     <div className='flex gap-7 align-middle justify-center'>
 
                         <div>
-                        <Link to='/register/adopter'>
-                            <button className='btn btn-orange'>Pet Adopter</button>
-                        </Link>
+                            <Link to='/register/adopter'>
+                                <button className='btn btn-orange'>Pet Adopter</button>
+                            </Link>
                         </div>
-                        
+
                         <div>
-                        <Link to='/register/shelter'>
-                            <button className='btn btn-primary'>Shelter</button>
-                        </Link>
+                            <Link to='/register/shelter'>
+                                <button className='btn btn-primary'>Shelter</button>
+                            </Link>
                         </div>
 
                     </div>

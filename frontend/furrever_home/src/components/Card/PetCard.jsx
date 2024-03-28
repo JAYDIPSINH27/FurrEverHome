@@ -1,23 +1,22 @@
 import React from 'react'
-
-const PetCard = ( {
+const PetCard = ({
     className,
     type,
     breed,
-    age,
     thumbnailSrc,
     shelterName,
     shelterCity,
     shelterContact,
-    petId
+    petId,
+    handleClick
 }) => {
-
+    
     const thumbnailAlt = "Alternate Image"
-  return (
-    <div className={`rounded-lg p-6 shadow-sm ${className}`}>
+    return (
+        <div className={`rounded-lg p-6 shadow-sm ${className}`}>
             <div className="overflow-hidden rounded-lg">
                 <img
-                    className="w-full cursor-pointer transition duration-200 ease-in-out transform hover:scale-110 rounded-full h-auto"
+                    className=" h-52 w-52 cursor-pointer transition duration-200 ease-in-out transform hover:scale-110 "
                     src={thumbnailSrc}
                     alt={thumbnailAlt}
                 />
@@ -29,13 +28,16 @@ const PetCard = ( {
                 {breed}
             </h5>
             <p className="font-normal text-gray-500 cursor-pointer text-lg duration-300 transition hover:text-[#FA5252] mt-2">
-                {shelterName} 
+                {shelterName} , {shelterCity}
             </p>
             <p className="font-normal text-gray-500 cursor-pointer text-lg duration-300 transition hover:text-[#FA5252] mt-2">
                 Want to adopt me ? contact at {shelterContact}
             </p>
-    </div>
-  )
+            <button className='btn btn-outline' onClick={() => handleClick(petId)} >
+                Details
+            </button>
+        </div>
+    )
 }
 
 export default PetCard

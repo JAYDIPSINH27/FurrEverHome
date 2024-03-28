@@ -2,7 +2,7 @@ package com.furreverhome.Furrever_Home.config;
 
 
 import com.furreverhome.Furrever_Home.enums.Role;
-import com.furreverhome.Furrever_Home.services.UserService;
+import com.furreverhome.Furrever_Home.services.jwtservices.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +28,12 @@ public class SecurityConfiguration {
 
     private final UserService userService;
 
+    /**
+     * Defines the security filter chain that handles HTTP security configurations.
+     * @param http HttpSecurity object used for configuring security settings.
+     * @return SecurityFilterChain instance representing the security filter chain.
+     * @throws Exception If an error occurs while configuring security settings.
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
@@ -45,6 +51,10 @@ public class SecurityConfiguration {
         return http.build();
     }
 
+    /**
+     * Creates an AuthenticationProvider bean.
+     * @return AuthenticationProvider instance configured with user details service and password encoder.
+     */
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
@@ -53,11 +63,21 @@ public class SecurityConfiguration {
         return authenticationProvider;
     }
 
+    /**
+     * Creates a PasswordEncoder bean for encrypting passwords.
+     * @return PasswordEncoder instance, specifically a BCryptPasswordEncoder.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Creates an AuthenticationManager bean for authentication purposes.
+     * @param config AuthenticationConfiguration object.
+     * @return AuthenticationManager instance.
+     * @throws Exception If an error occurs while retrieving the authentication manager.
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();

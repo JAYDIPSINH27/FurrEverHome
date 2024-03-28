@@ -18,7 +18,15 @@ public class AdminServiceImpl implements AdminService {
     private final ShelterRepository shelterRepository;
     private final UserRepository userRepository;
 
-
+    /**
+     * Changes the verified status of a user associated with the given email.
+     * If the status is "Approve", sets the associated shelter's accepted flag to true and rejected flag to false.
+     * If the status is not "Approve", sets the associated shelter's rejected flag to true and accepted flag to false.
+     *
+     * @param email The email of the user whose verified status needs to be changed.
+     * @param status The status to set ("Approve" or not).
+     * @return true if the verified status is successfully changed, false otherwise.
+     */
     @Override
     public boolean changeVerifiedStatus(String email, String status) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
@@ -28,11 +36,11 @@ public class AdminServiceImpl implements AdminService {
             if (optionalShelter.isPresent()) {
                 Shelter shelter = optionalShelter.get();
                 if(Objects.equals(status, "Approve")) {
-                    user.setVerified(Boolean.TRUE);
+                    shelter.setAccepted(Boolean.TRUE);
                     shelter.setRejected(Boolean.FALSE);
                 } else{
                     shelter.setRejected(Boolean.TRUE);
-                    user.setVerified(Boolean.FALSE);
+                    shelter.setAccepted(Boolean.FALSE);
                 }
                 shelterRepository.save(shelter);
                 userRepository.save(user);

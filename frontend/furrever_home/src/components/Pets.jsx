@@ -94,12 +94,12 @@ const Pets = () => {
   const [petDetails, setPetDetails] = useState(pets[10]);
   const [petIndex, setPetIndex] = useState(10);
 
-  const getPetDetails = (id)=>{
-    const pet = pets.find((pet)=>{
+  const getPetDetails = (id) => {
+    const pet = pets.find((pet) => {
       return pet.id === id;
     })
     setPetDetails(pet);
-    
+
   }
 
   return (
@@ -129,15 +129,15 @@ const Pets = () => {
 
                 return (
                   <div onClick={
-                    ()=>{
+                    () => {
 
                       getPetDetails(pet.id)
                       setPetIndex(index)
-                    } 
+                    }
 
-                    } className='cursor-pointer relative' key={index}>
+                  } className='cursor-pointer relative' key={index}>
                     {/* Overlay */}
-                    <div className={`w-full h-full absolute rounded-full ${petIndex === index ? 'border-2 border-white' : 'bg-black/40 ' }`}></div>
+                    <div className={`w-full h-full absolute rounded-full ${petIndex === index ? 'border-2 border-white' : 'bg-black/40 '}`}></div>
                     <img src={pet.image} width={95} height={95} draggable='false'></img>
                   </div>
                 )

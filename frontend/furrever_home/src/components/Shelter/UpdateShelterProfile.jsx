@@ -1,20 +1,14 @@
-import React, { useState } from "react";
 import {
-    Button,
-    Dialog,
     Card,
-    CardHeader,
     CardBody,
-    CardFooter,
-    Typography,
-    Input,
-    Checkbox,
-
+    Dialog,
+    Typography
 } from "@material-tailwind/react";
 import axios from 'axios';
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { deleteLocalStorage, readLocalStorage, saveLocalStorage } from '../../utils/helper'
+import { deleteLocalStorage, readLocalStorage, saveLocalStorage } from '../../utils/helper';
 
 const UpdateShelterProfile = ({ shelter }) => {
     const [open, setOpen] = React.useState(false);
@@ -32,7 +26,7 @@ const UpdateShelterProfile = ({ shelter }) => {
         city: shelter.city,
         country: shelter.country,
         zipcode: shelter.zipcode,
-        contact:shelter.contact,
+        contact: shelter.contact,
         imageBase64: "",
         shelter: id
     });
@@ -50,11 +44,11 @@ const UpdateShelterProfile = ({ shelter }) => {
         const reader = new FileReader();
         reader.readAsDataURL(image);
         reader.onload = function (e) {
-            //   console.log(e.target.result)
+
             const newData = { ...formData }
             newData.imageBase64 = e.target.result
             setFormData(newData)
-            //   console.log(typeof (image))
+
         };
 
         reader.onerror = function () {
@@ -74,7 +68,6 @@ const UpdateShelterProfile = ({ shelter }) => {
             }
         })
             .then((res) => {
-                console.log(res)
                 setLoading(true)
                 deleteLocalStorage("User")
                 saveLocalStorage("User", JSON.stringify(res.data))
@@ -88,7 +81,7 @@ const UpdateShelterProfile = ({ shelter }) => {
                     city: "",
                     country: "",
                     zipcode: "",
-                    contact:"",
+                    contact: "",
                     shelter: id
                 })
             })
@@ -103,7 +96,7 @@ const UpdateShelterProfile = ({ shelter }) => {
                     city: "",
                     country: "",
                     zipcode: "",
-                    contact:"",
+                    contact: "",
                     shelter: id
                 })
             })
@@ -113,7 +106,7 @@ const UpdateShelterProfile = ({ shelter }) => {
 
     return (
         <>
-            <button className="btn btn-orange m-5 lg:h-15 sm:h-20" onClick={handleOpen}>Update Profile</button>
+            <button className="btn btn-orange m-5 " onClick={handleOpen}>Update Profile</button>
             <Dialog
                 size="lg"
                 open={open}

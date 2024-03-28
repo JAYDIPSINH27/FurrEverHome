@@ -1,24 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
-import ImgLogo from '/img/logo/LogoWithText_NoBG.png'
-import { Link } from 'react-router-dom';
-import verifyAuthentication from '../hooks/verifyAuthentication';
-import { deleteLocalStorage, readLocalStorage } from '../utils/helper';
-import { useNavigate } from 'react-router-dom';
-import Modal from './Modal/Modal';
 import {
   Avatar, Menu,
   MenuHandler,
-  MenuList,
   MenuItem,
-  Button,
+  MenuList
 } from "@material-tailwind/react";
+import InitialsAvatar from 'react-initials-avatar';
+import 'react-initials-avatar/lib/ReactInitialsAvatar.css';
+import { Link, useNavigate } from 'react-router-dom';
+import verifyAuthentication from '../hooks/verifyAuthentication';
+import { deleteLocalStorage, readLocalStorage } from '../utils/helper';
+import Modal from './Modal/Modal';
+import ImgLogo from '/img/logo/LogoWithText_NoBG.png';
 
-const Header = () => {
+const Header = ({user}) => {
   const userToken = verifyAuthentication()
-  const user = JSON.parse(readLocalStorage("User"))
-  console.log(userToken)
+
   const navigate = useNavigate();
+
 
   const handleLogout = () => {
     deleteLocalStorage("token");
@@ -37,27 +37,13 @@ const Header = () => {
 
 
         {/* Todo: Add Link Component*/}
-        
-        
+
+
 
         {
           (userToken.userRole === 'SHELTER')
             ?
             (
-              //   <nav className='text-xl flex gap-x-4 lg:gap-x-12'>
-              //   <Link to='/shelter/home' >
-              //     Pets
-              //   </Link>
-              //   {/* <Link to='/'>
-              //     Pets
-              //   </Link> */}
-              //   {/* <Link to='/shelter/register-pet'>
-              //     Register Pet
-              //   </Link> */}
-              //   <Link to='/'>
-              //     Manage
-              //   </Link>
-              // </nav>
               (
                 <Link to='/shelter/home'>
                   <img className=' h-12' src={ImgLogo} />
@@ -80,10 +66,10 @@ const Header = () => {
                       {/* <Link to='/'>
                         Pets
                       </Link> */}
-                      <Link to='/'>
+                      {/* <Link to='/'>
                         Adopt
-                      </Link>
-                      <Link to='/'>
+                      </Link> */}
+                      <Link to='/lost-found'>
                         Lost&Found
                       </Link>
                     </nav>
@@ -106,51 +92,101 @@ const Header = () => {
               <div className='flex gap-2'>
 
 
-
-
-                <Menu>
-                  <MenuHandler>
-                    <button><Avatar src="https://docs.material-tailwind.com/img/face-2.jpg" alt="avatar" size="md" /></button>
-                  </MenuHandler>
-                  <MenuList>
-                    
-                    {
-                      userToken.userRole==="SHELTER" 
+                {
+                  userToken.userRole === "SHELTER"
+                    ?
+                    (
+                      <Menu>
+                        <MenuHandler>
+                          <button>
+                            <img
+                              alt="user 5"
+                              src={user.image}
+                              class="relative inline-block h-12 w-12 rounded-full border-2 border-white object-cover object-center hover:z-10 focus:z-10"
+                            />
+                          </button>
+                        </MenuHandler>
+                        <MenuList>
+                          <MenuItem>
+                            <Link to="/shelter/profile">
+                              Profile
+                            </Link>
+                          </MenuItem>
+                          <MenuItem>
+                            <Link to="/shelter/home">
+                              Dashboard
+                            </Link>
+                          </MenuItem>
+                          <button type="submit"
+                            className="btn btn-outline align-middle justify-center"
+                            onClick={handleLogout}
+                          >
+                            Sign Out
+                          </button>
+                        </MenuList>
+                      </Menu>
+                    )
+                    :
+                    userToken.userRole === "PETADOPTER"
                       ?
-                      (<>
-                        <MenuItem>
-                    <Link to="/shelter/profile">
-                    Profile
-                    </Link>   
-                    </MenuItem>
-                      <MenuItem>
-                        <Link to="/shelter/home">
-                        Dashboard
-                        </Link>   
-                        </MenuItem> 
-                        </>  )
+                      (
+                        <Menu>
+                          <MenuHandler>
+                            <button>
+                              <InitialsAvatar name={`${user.firstname} ${user.lastname}`} />
+                            </button>
+                          </MenuHandler>
+                          <MenuList>
+                            <MenuItem>
+                              <Link to="/adopter/profile">
+                                Profile
+                              </Link>
+                            </MenuItem>
+                            <MenuItem>
+                              <Link to="/adopter/home">
+                                Dashboard
+                              </Link>
+                            </MenuItem>
+                            <button type="submit"
+                              className="btn btn-outline align-middle justify-center"
+                              onClick={handleLogout}
+                            >
+                              Sign Out
+                            </button>
+                          </MenuList>
+                        </Menu>
+                      )
                       :
                       (
-                      <><MenuItem>
-                      <Link to="/adopter/profile">
-                      Profile
-                      </Link>   
-                      </MenuItem>
-                      <MenuItem>
-                        <Link to="/adopter/home">
-                        Dashboard
-                        </Link>   
-                        </MenuItem> </>  )
-                    }  
-                               
-                    <button type="submit"
-                      className="btn btn-outline align-middle justify-center"
-                      onClick={handleLogout}
-                    >
-                      Sign Out
-                    </button>
-                  </MenuList>
-                </Menu>
+                        <Menu>
+                          <MenuHandler>
+                            <button>
+                              <InitialsAvatar name={`ADMIN`} />
+                            </button>
+                          </MenuHandler>
+                          <MenuList>
+                            <MenuItem>
+                              <Link to="/adopter/profile">
+                                Profile
+                              </Link>
+                            </MenuItem>
+                            <MenuItem>
+                              <Link to="/adopter/home">
+                                Dashboard
+                              </Link>
+                            </MenuItem>
+                            <button type="submit"
+                              className="btn btn-outline align-middle justify-center"
+                              onClick={handleLogout}
+                            >
+                              Sign Out
+                            </button>
+                          </MenuList>
+                        </Menu>
+                      )
+                }
+
+
               </div>
 
             ) :

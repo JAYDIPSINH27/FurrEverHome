@@ -26,7 +26,10 @@ public class Pet {
     @Column(length = 100000)
     private String petImage;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Column(length = 1000)
+    private String petMedicalHistory;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "shelterID", referencedColumnName = "id")
     private Shelter shelter;
 

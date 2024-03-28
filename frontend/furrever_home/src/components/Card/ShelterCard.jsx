@@ -8,13 +8,17 @@ const ShelterCard = ({
     className,
     capacity,
     contact,
-    id
+    userId,
+    shelterId,
+    handleClick,
+    shelterData
 }) => {
+    
     return (
         <div className={`rounded-lg p-6 shadow-sm ${className}`}>
             <div className="overflow-hidden rounded-lg">
                 <img
-                    className="w-full cursor-pointer transition duration-200 ease-in-out transform hover:scale-110 rounded-lg h-auto"
+                    className="h-52 w-52 cursor-pointer transition duration-200 ease-in-out transform hover:scale-110 rounded-lg"
                     src={thumbnailSrc}
                     alt={thumbnailAlt}
                 />
@@ -23,44 +27,22 @@ const ShelterCard = ({
                 {heading}
             </h5>
             <h3 className="w-full cursor-pointer transition duration-200 ease-in-out transform hover:scale-110 rounded-lg h-auto">
-            {city}
+                {city}
             </h3>
             <p className="font-normal text-gray-500 cursor-pointer text-lg duration-300 transition hover:text-[#FA5252] mt-2">
-                Capacity of {capacity} 
+                Capacity of {capacity}
             </p>
             <p className="font-normal text-gray-500 cursor-pointer text-lg duration-300 transition hover:text-[#FA5252] mt-2">
                 Contact : {contact}
             </p>
+            {/* <Link to="/adopter/shelter/1"> */}
+            <button className='btn btn-outline' onClick={() => handleClick(shelterId, userId,shelterData)}>
+                Details
+            </button>
+            {/* </Link> */}
         </div>
     )
 }
 
 export default ShelterCard
 
-
-// function Card3Presentation() {
-//     return (
-//         <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 p-3 sm:p-8">
-//             <Card3
-//                 className="bg-[#fcf4ff]"
-//                 heading="Heading"
-//                 description="Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam euismod volutpat."
-//                 thumbnailSrc="/img/placeholder-1.jpg"
-//             />
-//             <Card3
-//                 className="bg-[#fefaf0]"
-//                 heading="Heading"
-//                 description="Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam euismod volutpat."
-//                 thumbnailSrc="/img/placeholder-1.jpg"
-//             />
-//             <Card3
-//                 className="bg-[#f3faff]"
-//                 heading="Heading"
-//                 description="Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam euismod volutpat."
-//                 thumbnailSrc="/img/placeholder-1.jpg"
-//             />
-//         </div>
-//     );
-// }
-
-// export { Card3Presentation };

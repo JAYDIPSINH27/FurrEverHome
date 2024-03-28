@@ -19,11 +19,22 @@ public class AdminController {
     private final AdminService adminService;
     private final PetAdopterService petAdopterService;
 
+    /**
+     * Retrieves all shelters.
+     * @return ResponseEntity containing a list of ShelterResponseDto objects.
+     */
     @GetMapping("/shelters")
     public ResponseEntity<List<ShelterResponseDto>> getAllShelters() {
         List<ShelterResponseDto> shelterResponseDtoList = petAdopterService.getAllShelter();
         return ResponseEntity.ok(shelterResponseDtoList);
     }
+
+    /**
+     * Changes the verification status of a shelter.
+     * @param email The email of the shelter to modify.
+     * @param status The new verification status.
+     * @return ResponseEntity indicating the success or failure of the operation.
+     */
     @GetMapping("/shelter/{email}/{status}")
     public ResponseEntity<?> changeVerifiedStatus(@PathVariable String email, @PathVariable String status) {
         System.out.println(email);

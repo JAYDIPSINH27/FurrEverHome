@@ -14,5 +14,7 @@ public class RegisterPetRequest {
     private String gender;
     private Date birthdate;
     private String petImage;
+    private String petMedicalHistory;
     private long shelter;
+    private boolean adopted;
 }

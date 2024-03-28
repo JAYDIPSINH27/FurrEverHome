@@ -1,38 +1,49 @@
-import React, { useState } from "react";
 import {
-    Button,
-    Dialog,
     Card,
-    CardHeader,
     CardBody,
-    CardFooter,
-    Typography,
-    Input,
-    Checkbox,
-
+    Dialog,
+    Typography
 } from "@material-tailwind/react";
 import axios from 'axios';
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { deleteLocalStorage, readLocalStorage, saveLocalStorage } from '../../utils/helper'
+import { deleteLocalStorage, readLocalStorage, saveLocalStorage } from '../../utils/helper';
 
-const UpdateAdopterProfile = ({ id, token }) => {
-    const [open, setOpen] = React.useState(false);
+const UpdateAdopterProfile = ({ user }) => {
+    const [open, setOpen] = useState(false);
     const [response, setResponse] = useState({})
     const [loading, setLoading] = useState(true)
     const handleOpen = () => setOpen((cur) => !cur);
     const navigate = useNavigate();
 
+    useEffect(() => {
+        setFormData({
+
+            firstName: user.firstName,
+            lastName: user.lastName,
+            phoneNumber: user.phoneNumber,
+            address: user.address,
+            city: user.city,
+            country: user.country,
+            zipcode: user.zipcode
+        })
+
+    },[user])
+
 
     const [formData, setFormData] = useState({
-        firstName:"",
-        lastName:"",
-        phoneNumber:"",
-        address:"",
-        city:"",
-        country:"",
-        zipcode:""
+        firstName: "",
+        lastName: "",
+        phoneNumber: "",
+        address: "",
+        city: "",
+        country: "",
+        zipcode: ""
     });
+
+
+
 
     const handleChange = (event) => {
 
@@ -48,41 +59,27 @@ const UpdateAdopterProfile = ({ id, token }) => {
         const userId = readLocalStorage("id")
         const token = readLocalStorage("token")
 
-        axios.put(`${import.meta.env.VITE_BACKEND_BASE_URL}/users/${userId}`,formData, {
+        axios.put(`${import.meta.env.VITE_BACKEND_BASE_URL}/users/${userId}`, formData, {
             headers: {
                 Authorization: `Bearer ${token} `,
             }
         })
             .then((res) => {
-                console.log(res)
+
                 setLoading(true)
                 deleteLocalStorage("User")
-                saveLocalStorage("User",JSON.stringify(res.data))
+                saveLocalStorage("User", JSON.stringify(res.data))
                 toast.success("Successfully Updated User info");
-                navigate("/adopter/home")
+                // navigate("/adopter/home")
+                navigate(0)
                 handleOpen();
-                setFormData({
-                    firstName:"",
-                    lastName:"",
-                    phoneNumber:"",
-                    address:"",
-                    city:"",
-                    country:"",
-                    zipcode:""
-                 })})
+
+            })
             .catch((err) => {
                 console.log(err)
                 toast.error(err.message)
                 handleOpen();
-                setFormData({
-                    age: "",
-                    type: "",
-                    breed: "",
-                    colour: "",
-                    gender: "",
-                    birthdate: "",
-                    petImage: ""
-                })
+
             })
     }
 
@@ -90,7 +87,7 @@ const UpdateAdopterProfile = ({ id, token }) => {
 
     return (
         <>
-            <button className="btn btn-orange m-5 lg:h-15 sm:h-20" onClick={handleOpen}>Update Profile</button>
+            <button className="btn btn-orange m-5 " onClick={handleOpen}>Update Profile</button>
             <Dialog
                 size="lg"
                 open={open}
@@ -233,15 +230,15 @@ const UpdateAdopterProfile = ({ id, token }) => {
                                 </label>
                                 <div className="mt-1">
                                     <input
-                                       id="zipcode"
-                                       name="zipcode"
-                                       type="text"
-                                       value={formData.zipcode}
-                                       onChange={handleChange}
-                                       autoComplete="text"
-                                       required
-                                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                       placeholder='Enter Zipcode'
+                                        id="zipcode"
+                                        name="zipcode"
+                                        type="text"
+                                        value={formData.zipcode}
+                                        onChange={handleChange}
+                                        autoComplete="text"
+                                        required
+                                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        placeholder='Enter Zipcode'
                                     />
                                 </div>
                             </div>
@@ -260,6 +257,6 @@ const UpdateAdopterProfile = ({ id, token }) => {
             </Dialog>
         </>
     );
-  }
+}
 
 export default UpdateAdopterProfile

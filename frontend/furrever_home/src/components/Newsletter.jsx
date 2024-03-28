@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { HiOutlineArrowNarrowRight } from 'react-icons/hi'
-import DogImage from '/img/newsletter/dog.png'
+import { HiOutlineArrowNarrowRight } from 'react-icons/hi';
+import DogImage from '/img/newsletter/dog.png';
 const Newsletter = () => {
   return (
     <section>
@@ -11,9 +11,9 @@ const Newsletter = () => {
             <h2>Checkout our Pet Care Blogs</h2>
 
             <div className=''>
-              
-              <button className='btn btn-primary'>Blogs<HiOutlineArrowNarrowRight/></button>
-              </div>
+
+              <button className='btn btn-primary'>Blogs<HiOutlineArrowNarrowRight /></button>
+            </div>
           </div>
         </div>
         <div className='bg-newsletterYellow bg-center bg-no-repeat bg-cover flex-1 flex justify-center items-end h-full'>

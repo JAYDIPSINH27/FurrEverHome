@@ -1,10 +1,9 @@
-import React, { useState } from 'react'
-import Logo from '../Logo'
-import { Link } from 'react-router-dom';
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import axios from 'axios';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from "react-toastify";
 import { validatePassword } from '../../utils/helper';
+import Logo from '../Logo';
 
 const ShelterRegister = () => {
 
@@ -23,9 +22,10 @@ const ShelterRegister = () => {
     role: "shelter",
     capacity: "",
     address: "",
-    city:"",
-    country:"",
-    zipcode:""
+    city: "",
+    country: "",
+    zipcode: "",
+    checkRole: "2"
   })
 
   const [image, setImage] = useState([])
@@ -45,9 +45,9 @@ const ShelterRegister = () => {
     const reader = new FileReader();
     reader.readAsDataURL(image);
     reader.onload = function (e) {
-      console.log(e.target.result)
+
       setImage(e.target.result)
-      console.log(typeof (image))
+
     };
 
     reader.onerror = function () {
@@ -57,7 +57,6 @@ const ShelterRegister = () => {
 
   const handleLicense = (image) => {
 
-    console.log(image)
 
 
     const reader = new FileReader();
@@ -87,9 +86,10 @@ const ShelterRegister = () => {
       imageBase64: image,
       license: license,
       address: formData.address,
-      city:formData.city,
-      country:formData.country,
-      zipcode:formData.zipcode
+      city: formData.city,
+      country: formData.country,
+      zipcode: formData.zipcode,
+      checkRole: formData.checkRole
 
     }
 
@@ -99,14 +99,14 @@ const ShelterRegister = () => {
 
       axios.post(`${import.meta.env.VITE_BACKEND_BASE_URL}/auth/signup`, data)
         .then((res) => {
-          console.log(res)
+
           setResponse(res)
           setLoading(false)
           toast.info("Your Shelter Verification is Pending!");
           navigate("/login")
         })
         .catch((err) => {
-          console.log(err)
+
           setError(err)
           toast.error(err.message)
         })
