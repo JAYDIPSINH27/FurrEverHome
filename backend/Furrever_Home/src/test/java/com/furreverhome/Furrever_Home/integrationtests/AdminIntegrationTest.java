@@ -6,16 +6,20 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import static io.restassured.RestAssured.given;
-@SpringBootTest
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration
 class AdminIntegrationTest {
     private String token;
-    public String serverLink = "http://172.17.0.170:";
-    @Value("${server.port}")
-    public String port;
+    public String serverLink = "http://localhost:";
+
+    @LocalServerPort
+    private int port;
 
     /**
      * Sets up the necessary authentication token before each test method.

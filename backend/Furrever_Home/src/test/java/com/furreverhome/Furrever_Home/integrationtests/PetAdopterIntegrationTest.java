@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -30,16 +31,15 @@ import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration
 @AutoConfigureMockMvc
 @EnableJpaRepositories("com.furreverhome.Furrever_Home.repository")
 public class PetAdopterIntegrationTest {
-    public String serverLink = "http://172.17.0.170:";
-    @Value("${server.port}")
-    public String port;
-    @Autowired
-    JdbcTemplate jdbcTemplate;
+    public String serverLink = "http://localhost:";
+
+    @LocalServerPort
+    private int port;
 
     @Autowired
     private UserRepository userRepository;
