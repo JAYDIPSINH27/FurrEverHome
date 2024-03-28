@@ -1,43 +1,35 @@
-import React from "react";
 import {
-  Card,
-  Typography,
-  List,
-  ListItem,
-  ListItemPrefix,
-  ListItemSuffix,
-  Chip,
-  Accordion,
-  AccordionHeader,
-  AccordionBody,
-} from "@material-tailwind/react";
-import {
-  PresentationChartBarIcon,
-  ShoppingBagIcon,
-  UserCircleIcon,
   Cog6ToothIcon,
   InboxIcon,
   PowerIcon,
+  UserCircleIcon
 } from "@heroicons/react/24/solid";
-import { ChevronRightIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
- import { Link } from "react-router-dom";
+import {
+  Card,
+  List,
+  ListItem,
+  ListItemPrefix,
+  Typography
+} from "@material-tailwind/react";
+import React from "react";
+import { Link } from "react-router-dom";
 
 const Sidebar = () => {
-    const [open, setOpen] = React.useState(0);
- 
-    const handleOpen = (value) => {
-      setOpen(open === value ? 0 : value);
-    };
-   
-    return (
-      <Card className="lg:h-[calc(100vh-2rem)] sm:w-full  lg:max-w-[20rem] m-2 p-4 bg-primary shadow-xl shadow-white-900/5 ">
-        {/* <div className="mb-2 p-4">
+  const [open, setOpen] = React.useState(0);
+
+  const handleOpen = (value) => {
+    setOpen(open === value ? 0 : value);
+  };
+
+  return (
+    <Card className="lg:h-[calc(100vh-2rem)] sm:w-full  lg:max-w-[20rem] m-2 p-4 bg-primary shadow-xl shadow-white-900/5 ">
+      {/* <div className="mb-2 p-4">
           <Typography variant="h5" color="white">
             Sidebar
           </Typography>
         </div> */}
-        <List>
-          {/* <Accordion
+      <List>
+        {/* <Accordion
             open={open === 1}
             icon={
               <ChevronDownIcon
@@ -46,7 +38,7 @@ const Sidebar = () => {
               />
             }
           > */}
-            {/* <ListItem className="p-0" selected={open === 1}>
+        {/* <ListItem className="p-0" selected={open === 1}>
               <AccordionHeader onClick={() => handleOpen(1)} className="border-b-0 p-3">
                 <ListItemPrefix>
                   <PresentationChartBarIcon className="h-5 w-5" />
@@ -56,7 +48,7 @@ const Sidebar = () => {
                 </Typography>
               </AccordionHeader>
             </ListItem> */}
-            {/* <AccordionBody className="py-1">
+        {/* <AccordionBody className="py-1">
               <List className="p-0">
                 <ListItem>
                   <ListItemPrefix>
@@ -78,8 +70,8 @@ const Sidebar = () => {
                 </ListItem>
               </List>
             </AccordionBody> */}
-          {/* </Accordion> */}
-          {/* <Accordion
+        {/* </Accordion> */}
+        {/* <Accordion
             open={open === 2}
             icon={
               <ChevronDownIcon
@@ -115,46 +107,46 @@ const Sidebar = () => {
               </List>
             </AccordionBody>
           </Accordion> */}
-          {/* <hr className="border-white-50" /> */}
-          <ListItem>
-            <ListItemPrefix>
-              <InboxIcon className="h-5 w-5 text-white" />
-            </ListItemPrefix>
-            <Typography variant="h8" color="white">
+        {/* <hr className="border-white-50" /> */}
+        <ListItem>
+          <ListItemPrefix>
+            <InboxIcon className="h-5 w-5 text-white" />
+          </ListItemPrefix>
+          <Typography variant="h8" color="white">
             Profile
           </Typography>
-          
-          </ListItem>
-          <ListItem>
-            <ListItemPrefix>
-              <UserCircleIcon className="h-5 w-5 text-white" />
-            </ListItemPrefix>
-            <Typography variant="h8" color="white">
+
+        </ListItem>
+        <ListItem>
+          <ListItemPrefix>
+            <UserCircleIcon className="h-5 w-5 text-white" />
+          </ListItemPrefix>
+          <Typography variant="h8" color="white">
             Pets
           </Typography>
-          </ListItem>
-          <ListItem>
-            <ListItemPrefix>
-              <Cog6ToothIcon className="h-5 w-5 text-white" />
-            </ListItemPrefix>
-            <Typography variant="h8" color="white">
+        </ListItem>
+        <ListItem>
+          <ListItemPrefix>
+            <Cog6ToothIcon className="h-5 w-5 text-white" />
+          </ListItemPrefix>
+          <Typography variant="h8" color="white">
             <Link to="#id">Sidebar</Link>
           </Typography>
-          </ListItem>
-          <ListItem>
-            <ListItemPrefix>
-              <PowerIcon className="h-5 w-5 text-white" />
-            </ListItemPrefix>
-            <Typography variant="h8" color="white">
-              <Link to="/shelter/home/#pets">
+        </ListItem>
+        <ListItem>
+          <ListItemPrefix>
+            <PowerIcon className="h-5 w-5 text-white" />
+          </ListItemPrefix>
+          <Typography variant="h8" color="white">
+            <Link to="/shelter/home/#pets">
               Sidebar
-              </Link>
-            
+            </Link>
+
           </Typography>
-          </ListItem>
-        </List>
-      </Card>
-    );
+        </ListItem>
+      </List>
+    </Card>
+  );
 }
 
 export default Sidebar

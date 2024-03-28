@@ -1,76 +1,74 @@
-import React, { useState, useEffect} from 'react'
-import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
-import { Link } from 'react-router-dom'
-import { ToastContainer, toast } from "react-toastify";
-import { saveLocalStorage, validatePassword } from '../utils/helper'
-import Logo from '../components/Logo'
+import axios from 'axios';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from "react-toastify";
+import Logo from '../components/Logo';
+import { saveLocalStorage, validatePassword } from '../utils/helper';
 
 const Login = () => {
 
-  const [email,setEmail] = useState('');
-  const [password,setPassword] = useState('');
-  const [isError,setIsError] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isError, setIsError] = useState(false);
   let errors = [];
 
   const navigate = useNavigate();
 
   const handleEmailChange = (event) => {
-      setEmail(event.target.value);
+    setEmail(event.target.value);
   }
 
-  const handlePasswordChange =(event) =>{
+  const handlePasswordChange = (event) => {
     setPassword(event.target.value);
   }
- 
-  const handleSubmit = async(event) => {
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     errors = validatePassword(password);
-    console.log(errors)
 
-    if(errors.length === 0){
-      axios.post(`${import.meta.env.VITE_BACKEND_BASE_URL}/auth/signin`,{email,password})
-      .then(response=>{
 
-        if(response.data.token === null){
-          toast.info("Verification Pending");
-        }
-        else{
-          console.log(response);
-          toast.success("Login Successfull")
-          saveLocalStorage("id",response.data.userId)
-          saveLocalStorage("token",response.data.token)
-          saveLocalStorage("role",response.data.userRole)
-          saveLocalStorage("shelterID",response.data.shelterId)
-          saveLocalStorage("petadopterID",response.data.petAdopterId)
-          saveLocalStorage("User",JSON.stringify(response.data))
-          console.log(response.data)
+    if (errors.length === 0) {
+      axios.post(`${import.meta.env.VITE_BACKEND_BASE_URL}/auth/signin`, { email, password })
+        .then(response => {
 
-            if(response.data.userRole == "PETADOPTER")
-            {
+          if (response.data.token === null) {
+            toast.info("Email Verification Pending");
+          }
+          else {
+
+            toast.success("Login Successfull")
+            saveLocalStorage("id", response.data.userId)
+            saveLocalStorage("token", response.data.token)
+            saveLocalStorage("role", response.data.userRole)
+            saveLocalStorage("shelterID", response.data.shelterId)
+            saveLocalStorage("petadopterID", response.data.petAdopterId)
+            // saveLocalStorage("User", JSON.stringify(response.data))
+            console.log(response.data)
+
+            if (response.data.userRole == "PETADOPTER") {
               navigate("/adopter/home");
             }
-            else if(response.data.userRole == "SHELTER")
-            {
+            else if (response.data.userRole == "SHELTER") {
 
               navigate("/shelter/home");
             }
-            else if(response.data.userRole == "ADMIN") {
+            else if (response.data.userRole == "ADMIN") {
 
               navigate("/admin/home")
             }
 
-        }
+          }
 
-          
-        
-      })
-      .catch(error =>{
-        toast.error("Incorrect Username or Password");
-      })
+
+
+        })
+        .catch(error => {
+
+          toast.error(error.response.data.message);
+        })
     }
-    else{
+    else {
       toast.error("Invalid Password")
       setIsError(true);
     }
@@ -80,7 +78,7 @@ const Login = () => {
     <>
       <div className="flex min-h-full flex-1 flex-col m-8 justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <Logo />
+          <Logo />
           <h2 className="mt-10 font-primary text-center text-2xl font-bold leading-9 tracking-tight text-teal">
             Welcome Back to FurreverHome
           </h2>
@@ -89,9 +87,9 @@ const Login = () => {
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form className="space-y-6" action="#" method="POST" onSubmit={handleSubmit}>
             <div>
-            
+
               <label htmlFor="email" className="text-sm font-medium leading-6 text-gray-900 flex">
-                 Email address
+                Email address
               </label>
               <div className="mt-2">
                 <input
@@ -133,12 +131,12 @@ const Login = () => {
 
 
               <div className='text-red-500 text-sm'>
-              {isError && <p>
-                * Your Password must be 8 characters long,should contain a digit, Uppercase Letter, Special and should not contain numerical sequence, alphabetical sequence,keyboard sequence and empty space. 
+                {isError && <p>
+                  * Your Password must be 8 characters long,should contain a digit, Uppercase Letter, Special and should not contain numerical sequence, alphabetical sequence,keyboard sequence and empty space.
                 </p>
-              }
+                }
               </div>
-              
+
             </div>
 
             <div>
@@ -168,7 +166,7 @@ const Login = () => {
       {/* </div> */}
     </>
   )
-  
+
   /*if(user === "adopter"){
     return(<PetAdopterLogin/>)
   }

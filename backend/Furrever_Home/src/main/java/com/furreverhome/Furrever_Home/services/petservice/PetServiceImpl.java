@@ -31,6 +31,13 @@ public class PetServiceImpl implements PetService {
     private final PetVaccinationInfoRepository petVaccinationInfoRepository;
 
 
+    /**
+     * Retrieves the information of a pet by its ID.
+     *
+     * @param petID The ID of the pet to retrieve information for.
+     * @return A PetDto object containing the information of the pet.
+     * @throws RuntimeException if the pet with the given ID is not found.
+     */
     public PetDto getPetInfo(Long petID) {
         Optional<Pet> optionalPet = petRepository.findById(petID);
         if (optionalPet.isPresent()) {
@@ -41,6 +48,14 @@ public class PetServiceImpl implements PetService {
         }
     }
 
+    /**
+     * Adds vaccination details for a pet.
+     *
+     * @param petVaccineDto The vaccination details to be added.
+     * @param petID         The ID of the pet to add vaccination details for.
+     * @return A GenericResponse indicating the result of the operation.
+     * @throws RuntimeException if the pet with the given ID is not found.
+     */
     public GenericResponse addVaccinationDetails(PetVaccineDto petVaccineDto, Long petID) {
         Optional<Pet> optionalPet = petRepository.findById(petID);
         if (optionalPet.isPresent()) {
@@ -62,6 +77,13 @@ public class PetServiceImpl implements PetService {
         }
     }
 
+    /**
+     * Updates the pet vaccination notification information based on the next vaccination date.
+     * If a pet vaccination is found with a date greater than today's date, it updates the next vaccination
+     * date in the PetVaccinationInfo entity.
+     *
+     * @param pet The pet for which vaccination notification information is to be updated.
+     */
     private void updatePetVaccinationNotificationInfo(Pet pet) {
         Date today = new Date();
         Optional<PetVaccination> petVaccination = petVaccinationRepository.findFirstByPetAndDateGreaterThanOrderByDateAsc(pet, today);
@@ -82,6 +104,12 @@ public class PetServiceImpl implements PetService {
     }
     //---------------------------UTILS----------------------------
 
+    /**
+     * Maps a Pet entity to a PetDto object.
+     *
+     * @param pet The Pet entity to map.
+     * @return A PetDto object containing the mapped information.
+     */
     private PetDto mapPetToDto(Pet pet) {
         PetDto petDto = new PetDto();
         petDto.setPetID(pet.getPetID());
@@ -91,7 +119,7 @@ public class PetServiceImpl implements PetService {
         petDto.setGender(pet.getGender());
         petDto.setBirthdate(pet.getBirthdate());
         petDto.setPetImage(pet.getPetImage());
-        petDto.setPetMedicalHistory(petDto.getPetMedicalHistory());
+        petDto.setPetMedicalHistory(pet.getPetMedicalHistory());
         List<PetVaccination> petVaccinationList = petVaccinationRepository.findByPet(pet);
         List<String> vaccineNameList = new ArrayList<>();
         for (PetVaccination petVaccine : petVaccinationList) {

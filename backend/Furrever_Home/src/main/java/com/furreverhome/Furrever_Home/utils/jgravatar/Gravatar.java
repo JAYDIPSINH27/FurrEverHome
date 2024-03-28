@@ -41,7 +41,8 @@ public final class Gravatar {
 	 * default size of 80 pixels is used.
 	 */
 	public void setSize(int sizeInPixels) {
-		Validate.isTrue(sizeInPixels >= 1 && sizeInPixels <= 512,
+		int maximunImageSize = 512;
+		Validate.isTrue(sizeInPixels >= 1 && sizeInPixels <= maximunImageSize,
 				"sizeInPixels needs to be between 1 and 512");
 		this.size = sizeInPixels;
 	}

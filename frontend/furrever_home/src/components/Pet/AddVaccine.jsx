@@ -19,8 +19,6 @@ import { readLocalStorage } from '../../utils/helper';
 
 const AddVaccine = ({petId}) => {
     const [open, setOpen] = React.useState(false);
-    const [response, setResponse] = useState({})
-    const [loading, setLoading] = useState(true)
     const handleOpen = () => setOpen((cur) => !cur);
     const navigate = useNavigate();
     const token = readLocalStorage("token")
@@ -51,7 +49,6 @@ const AddVaccine = ({petId}) => {
         })
             .then((res) => {
                 console.log(res)
-                setLoading(true)
                 toast.success("Successfully Added Pet Vaccine info");
                 navigate(0)
                 handleOpen();
@@ -113,8 +110,20 @@ const AddVaccine = ({petId}) => {
                             </div>
 
                             <div>
+                                <label htmlFor="lastName" className="text-sm font-medium leading-6 text-gray-900 flex">
+                                   Is Vaccine given or not ?
+                                </label>
+                                <div className="mt-1">
+                                    <select name="adopted" id="adopted" value={formData.vaccineGiven} onChange={handleChange}>
+                                        <option value="true">Yes</option>
+                                        <option value="false">No</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
                             <label htmlFor="shelterName" className="text-sm font-medium leading-6 text-gray-900 flex">
-                                Date
+                                Date on which vaccine should be given
                             </label>
                             <div className="mt-1">
                                 <input
@@ -126,7 +135,7 @@ const AddVaccine = ({petId}) => {
                                     autoComplete="text"
                                     required
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    placeholder='Enter Shelter Name'
+                                    placeholder='Enter Date'
                                 />
                             </div>
                             </div>

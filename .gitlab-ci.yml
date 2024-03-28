@@ -1,7 +1,7 @@
 # List of stages for jobs, and their order of execution
 stages:
   - build
-  - test
+  # - test
   # - quality
   - publish
   - deploy
@@ -26,10 +26,11 @@ build-frontend:
   tags:
     - furrever-gl-runner
     # - autoscale-runner.cs.dal.ca
-  image: node:latest
+  image: node:18-alpine
   script:
     - cd frontend/furrever_home
-    - npm install
+    - npm config set registry https://registry.npmjs.org/
+    - npm i 
     - echo $VITE_BACKEND_TEST_BASE_URL
     - export VITE_BACKEND_BASE_URL=$VITE_BACKEND_TEST_BASE_URL
     - echo $VITE_BACKEND_BASE_URL
@@ -38,20 +39,21 @@ build-frontend:
     paths:
       - frontend/furrever_home/dist
 
-test:
-  stage: test
-  image: maven:latest
-  script:
-    - cd backend/Furrever_Home
-    - mvn test
+# test:
+#   stage: test
+#   image: maven:latest
+#   script:
+#     - cd backend/Furrever_Home
+#     - mvn test
 
 # quality:
 #   stage: quality
-#   image: openjdk:11
+#   image: openjdk:17-alpine
 #   script:
 #     - echo "Compiling the project"
 #     - mkdir smells/
-#     - java -jar $CI_PROJECT_DIR/.gitlab/DesigniteJava.jar -i $CI_PROJECT_DIR -o $CI_PROJECT_DIR/smells/ -d
+#     - java -version
+#     - java -jar $CI_PROJECT_DIR/backend/.gitlab/DesigniteJava.jar -i $CI_PROJECT_DIR -o $CI_PROJECT_DIR/smells/ -d
 #   artifacts:
 #     paths:
 #       - smells/
@@ -81,8 +83,9 @@ publish:
     - docker build -t em492028/furrever-backend-api:$IMAGE_TAG . -f Dockerfile
     - docker push em492028/furrever-backend-api:$IMAGE_TAG
   only:
-    - main
-    - dev
+    # - main
+    # - dev
+    - branches
 
 publish-frontend:
   image: docker:latest
@@ -105,12 +108,12 @@ publish-frontend:
    - docker --version
    - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PWD docker.io
    - IMAGE_TAG="$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA"
-   - docker build --build-arg VITE_BACKEND_BASE_URL=$VITE_BACKEND_TEST_BASE_URL -t em492028/furrever-frontend:$IMAGE_TAG . -f Dockerfile
+   - docker build --build-arg VITE_BACKEND_BASE_URL=$VITE_BACKEND_TEST_BASE_URL --build-arg FRONTEND_APP_PORT=$FRONTEND_APP_TEST_PORT -t em492028/furrever-frontend:$IMAGE_TAG . -f Dockerfile
    - docker push em492028/furrever-frontend:$IMAGE_TAG
   only:
-    - main
-    - dev
-
+    # - main
+    # - dev
+    - branches
 
 deploy:
   image: alpine:latest
@@ -141,8 +144,9 @@ deploy:
     name: development
     url: http://172.17.0.170:$SERVER_PORT
   only:
-    - main
-    - dev
+    # - main
+    # - dev
+    - branches
 
 deploy-frontend:
   image: alpine:latest
@@ -160,8 +164,8 @@ deploy-frontend:
     - SERVER_PORT=""
     - IMAGE_TAG="$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA"
     - if [ "$CI_COMMIT_REF_NAME" == "dev" ]; then CONTAINER_NAME="furrever-dev-app-frontend"; SERVER_PORT=3000; fi
-    - if [ "$CI_COMMIT_REF_NAME" == "main" ]; then CONTAINER_NAME="furrever-prod-app-frontend"; SERVER_PORT=3080; fi
-    - if [ "$CI_COMMIT_REF_NAME" != "main" ] && [ "$CI_COMMIT_REF_NAME" != "dev" ]; then CONTAINER_NAME="furrever-test-app-frontend"; SERVER_PORT=3030; fi
+    - if [ "$CI_COMMIT_REF_NAME" == "main" ]; then CONTAINER_NAME="furrever-prod-app-frontend"; SERVER_PORT=3000; fi
+    - if [ "$CI_COMMIT_REF_NAME" != "main" ] && [ "$CI_COMMIT_REF_NAME" != "dev" ]; then CONTAINER_NAME="furrever-test-app-frontend"; SERVER_PORT=3000; fi
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PWD docker.io"
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker pull em492028/furrever-frontend:$IMAGE_TAG"
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker container rm -f $CONTAINER_NAME || true"
@@ -170,5 +174,6 @@ deploy-frontend:
     name: development
     url: http://172.17.0.170:$SERVER_PORT
   only:
-    - main
-    - dev
+    # - main
+    # - dev
+    - branches

@@ -2,7 +2,7 @@ package com.furreverhome.Furrever_Home.services.petadopterservices.impl;
 
 import com.furreverhome.Furrever_Home.dto.GenericResponse;
 import com.furreverhome.Furrever_Home.dto.Pet.PetAdoptionRequestDto;
-import com.furreverhome.Furrever_Home.dto.PetAdopterDto;
+import com.furreverhome.Furrever_Home.dto.petadopter.PetAdopterDto;
 import com.furreverhome.Furrever_Home.dto.petadopter.*;
 import com.furreverhome.Furrever_Home.entities.*;
 import com.furreverhome.Furrever_Home.exception.UserNotFoundException;
@@ -31,11 +31,23 @@ public class PetAdopterServiceImpl implements PetAdopterService {
 
     private final AdopterPetRequestsRepository adopterPetRequestsRepository;
 
+    /**
+     * Retrieves all shelters.
+     *
+     * @return A list of ShelterResponseDto objects representing all shelters.
+     */
     @Override
     public List<ShelterResponseDto> getAllShelter() {
         return shelterRepository.findAll().stream().map(Shelter::getShelterResponseDto).collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves the details of a pet adopter by their user ID.
+     *
+     * @param userId The ID of the user.
+     * @return A PetAdopterDto object representing the details of the pet adopter.
+     * @throws UserNotFoundException If the user is not found.
+     */
     @Override
     public PetAdopterDto getPetAdopterDetailsById(Long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
@@ -55,6 +67,12 @@ public class PetAdopterServiceImpl implements PetAdopterService {
         }
     }
 
+    /**
+     * Searches for shelters based on the provided criteria.
+     *
+     * @param searchShelterDto The criteria to search shelters.
+     * @return A ShelterResponseDtoListDto object containing a list of shelters matching the criteria.
+     */
     @Override
     public ShelterResponseDtoListDto searchShelter(SearchShelterDto searchShelterDto) {
         Shelter shelter = new Shelter();
@@ -77,6 +95,12 @@ public class PetAdopterServiceImpl implements PetAdopterService {
        return shelterResponseDtoListDto;
     }
 
+    /**
+     * Searches for pets based on the provided criteria.
+     *
+     * @param searchPetDto The criteria to search pets.
+     * @return A PetResponseDtoListDto object containing a list of pets matching the criteria.
+     */
     @Override
     public PetResponseDtoListDto searchPet(SearchPetDto searchPetDto) {
         Pet pet = new Pet();
@@ -101,13 +125,21 @@ public class PetAdopterServiceImpl implements PetAdopterService {
         return petResponseDtoListDto;
     }
 
+    /**
+     * Sends a pet adoption request.
+     *
+     * @param petAdoptionRequestDto The pet adoption request information.
+     * @return A GenericResponse indicating the result of the adoption request.
+     */
     public GenericResponse adoptPetRequest(PetAdoptionRequestDto petAdoptionRequestDto) {
         Optional<PetAdopter> optionalPetAdopter= petAdopterRepository.findById(petAdoptionRequestDto.getPetAdopterID());
         Optional<Pet> optionalPet = petRepository.findById(petAdoptionRequestDto.getPetID());
         if (optionalPet.isPresent() && optionalPetAdopter.isPresent()) {
             Pet pet = optionalPet.get();
-            if (pet.isAdopted() == true || requestExists(petAdoptionRequestDto.getPetID(), petAdoptionRequestDto.getPetAdopterID())) {
+            if (pet.isAdopted() == true ) {
                 return new GenericResponse("Pet already adopted");
+            } else if (requestExists(petAdoptionRequestDto.getPetID(), petAdoptionRequestDto.getPetAdopterID())) {
+                return new GenericResponse("Pet adoption request already exists.");
             } else {
                 AdopterPetRequests adopterPetRequests = new AdopterPetRequests();
                 PetAdopter petAdopter = optionalPetAdopter.get();
@@ -121,6 +153,13 @@ public class PetAdopterServiceImpl implements PetAdopterService {
         }
     }
 
+    /**
+     * Checks if a pet adoption request already exists.
+     *
+     * @param petID         The ID of the pet.
+     * @param petAdopterID  The ID of the pet adopter.
+     * @return True if the pet adoption request exists, false otherwise.
+     */
     public boolean requestExists(Long petID, Long petAdopterID){
         Optional<PetAdopter> optionalPetAdopter= petAdopterRepository.findById(petAdopterID);
         Optional<Pet> optionalPet = petRepository.findById(petID);

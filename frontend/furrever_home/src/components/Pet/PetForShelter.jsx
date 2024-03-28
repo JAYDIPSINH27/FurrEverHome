@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom'
 import PetDetail from './PetDetail'
 import ShelterDetail from './ShelterDetail'
 import { readLocalStorage } from '../../utils/helper'
-import { ToastContainer, toast } from "react-toastify"
+import { toast } from "react-toastify"
 import axios from 'axios'
 
 const PetForShelter = () => {
@@ -14,9 +14,11 @@ const PetForShelter = () => {
       breed:"",
       birthDate:"",
       gender:"",
+      petMedicalHistory:"",
       color:"",
       image:"",
-      petId:""
+      petId:"",
+      adopted:""
     })
     const [shelter,setShelter] = useState({
       name:"",
@@ -35,7 +37,7 @@ const PetForShelter = () => {
         }
       })
       .then(response => {
-        console.log(response.data)
+
         const DOB = response.data.birthdate.substring(0,10)
         setPet({
           type:response.data.type,
@@ -43,12 +45,13 @@ const PetForShelter = () => {
           birthdate:DOB,
           gender:response.data.gender,
           colour:response.data.colour,
+          petMedicalHistory:response.data.petMedicalHistory,
           petImage:response.data.petImage,
-          petID:response.data.petID
+          petID:response.data.petID,
+          adopted:response.data.adopted
         })
 
         const res = response.data.shelter
-        console.log(res)
 
         setShelter({
           name:res.name,
@@ -65,7 +68,7 @@ const PetForShelter = () => {
 
     },[])
 
-    console.log(petId);
+
 
   return (
 

@@ -1,6 +1,6 @@
 package com.furreverhome.Furrever_Home.entities;
 
-import com.furreverhome.Furrever_Home.dto.PetAdopterDto;
+import com.furreverhome.Furrever_Home.dto.petadopter.PetAdopterDto;
 import com.furreverhome.Furrever_Home.enums.Role;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -22,7 +22,7 @@ public class PetAdopter {
 
     private String address;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 

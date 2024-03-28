@@ -1,6 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
-const PetCard = ( {
+const PetCard = ({
     className,
     type,
     breed,
@@ -11,13 +10,13 @@ const PetCard = ( {
     petId,
     handleClick
 }) => {
-
+    
     const thumbnailAlt = "Alternate Image"
-  return (
-    <div className={`rounded-lg p-6 shadow-sm ${className}`}>
+    return (
+        <div className={`rounded-lg p-6 shadow-sm ${className}`}>
             <div className="overflow-hidden rounded-lg">
                 <img
-                    className="w-full cursor-pointer transition duration-200 ease-in-out transform hover:scale-110 rounded-full h-auto"
+                    className=" h-52 w-52 cursor-pointer transition duration-200 ease-in-out transform hover:scale-110 "
                     src={thumbnailSrc}
                     alt={thumbnailAlt}
                 />
@@ -37,8 +36,8 @@ const PetCard = ( {
             <button className='btn btn-outline' onClick={() => handleClick(petId)} >
                 Details
             </button>
-    </div>
-  )
+        </div>
+    )
 }
 
 export default PetCard

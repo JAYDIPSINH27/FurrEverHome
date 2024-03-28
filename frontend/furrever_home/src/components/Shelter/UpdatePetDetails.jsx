@@ -1,30 +1,24 @@
-import React, { useState } from "react";
+import { PencilIcon } from "@heroicons/react/24/solid";
 import {
-    Button,
-    Dialog,
     Card,
-    CardHeader,
     CardBody,
-    CardFooter,
-    Typography,
-    Input,
-    Checkbox,
-
+    Dialog,
+    Typography
 } from "@material-tailwind/react";
 import axios from 'axios';
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { deleteLocalStorage, readLocalStorage, saveLocalStorage } from '../../utils/helper'
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
+import { readLocalStorage } from '../../utils/helper';
 
-const UpdatePetDetails = ({ pets, sid }) => {
+const UpdatePetDetails = ({ pets, sid,setChange }) => {
     const [open, setOpen] = React.useState(false);
     const [response, setResponse] = useState({})
     const [loading, setLoading] = useState(true)
     const handleOpen = () => setOpen((cur) => !cur);
     const navigate = useNavigate();
     const token = readLocalStorage("token")
-    console.log(pets)
+
     const [formData, setFormData] = useState({
 
         type: pets.type,
@@ -32,6 +26,7 @@ const UpdatePetDetails = ({ pets, sid }) => {
         colour: pets.colour,
         gender: pets.gender,
         birthdate: pets.birthdate,
+        petMedicalHistory:pets.petMedicalHistory,
         petImage: pets.petImage,
         shelter: sid,
         adopted: pets.adopted
@@ -50,11 +45,11 @@ const UpdatePetDetails = ({ pets, sid }) => {
         const reader = new FileReader();
         reader.readAsDataURL(image);
         reader.onload = function (e) {
-            //   console.log(e.target.result)
+
             const newData = { ...formData }
             newData.petImage = e.target.result
             setFormData(newData)
-            //   console.log(typeof (image))
+
         };
 
         reader.onerror = function () {
@@ -74,36 +69,37 @@ const UpdatePetDetails = ({ pets, sid }) => {
             }
         })
             .then((res) => {
-                console.log(res)
+
                 setResponse(res)
                 setLoading(true)
                 toast.success("Pet Updated!");
                 navigate(0)
+                setChange(true)
                 handleOpen();
-                setFormData({
-                    type: "",
-                    breed: "",
-                    colour: "",
-                    gender: "",
-                    birthdate: "",
-                    petImage: "",
-                    adopted: false
-                })
+                // setFormData({
+                //     type: "",
+                //     breed: "",
+                //     colour: "",
+                //     gender: "",
+                //     birthdate: "",
+                //     petImage: "",
+                //     adopted: false
+                // })
 
             })
             .catch((err) => {
                 console.log(err)
                 toast.error(err.message)
                 handleOpen();
-                setFormData({
-                    type: "",
-                    breed: "",
-                    colour: "",
-                    gender: "",
-                    birthdate: "",
-                    petImage: "",
-                    adopted: false
-                })
+                // setFormData({
+                //     type: "",
+                //     breed: "",
+                //     colour: "",
+                //     gender: "",
+                //     birthdate: "",
+                //     petImage: "",
+                //     adopted: false
+                // })
             })
     }
 
@@ -142,7 +138,7 @@ const UpdatePetDetails = ({ pets, sid }) => {
                                         autoComplete="text"
                                         required
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                        placeholder='Enter Shelter Name'
+                                        placeholder='Enter Pet Type'
                                     />
                                 </div>
                             </div>
@@ -175,7 +171,30 @@ const UpdatePetDetails = ({ pets, sid }) => {
                                         autoComplete="text"
                                         required
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                        placeholder='Enter Shelter Name'
+                                        placeholder='Enter Pet Breed'
+                                    />
+                                </div>
+                            </div>
+
+                            
+
+                            <div>
+
+                                <label htmlFor="shelterName" className="text-sm font-medium leading-6 text-gray-900 flex">
+                                    Medical History
+                                </label>
+                                <div className="mt-1">
+                                    <input
+                                        id="petMedicalHistory"
+                                        name="petMedicalHistory"
+                                        type="text"
+                                        value={formData.petMedicalHistory}
+                                        onChange={handleChange}
+                                        autoComplete="text"
+                                        size="40"
+                                        required
+                                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        placeholder='Enter Medical History'
                                     />
                                 </div>
                             </div>
@@ -195,7 +214,7 @@ const UpdatePetDetails = ({ pets, sid }) => {
                                         autoComplete="text"
                                         required
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                        placeholder='Enter Shelter Name'
+                                        placeholder='Enter Pet Colour'
                                     />
                                 </div>
                             </div>
@@ -215,7 +234,7 @@ const UpdatePetDetails = ({ pets, sid }) => {
                                         autoComplete="text"
                                         required
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                        placeholder='Enter Shelter Name'
+                                        placeholder='Enter Pet Gender'
                                     />
                                 </div>
                             </div>
@@ -235,7 +254,7 @@ const UpdatePetDetails = ({ pets, sid }) => {
                                         autoComplete="text"
                                         required
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                        placeholder='Enter Shelter Name'
+                                        
                                     />
                                 </div>
                             </div>

@@ -1,22 +1,20 @@
 package com.furreverhome.Furrever_Home.services.authenticationServices;
 
 
-import com.furreverhome.Furrever_Home.dto.GenericResponse;
-import com.furreverhome.Furrever_Home.dto.JwtAuthenticationResponse;
-import com.furreverhome.Furrever_Home.dto.RefreshTokenRequest;
-import com.furreverhome.Furrever_Home.dto.SigninRequest;
+import com.furreverhome.Furrever_Home.dto.*;
+import com.furreverhome.Furrever_Home.dto.auth.*;
 import com.furreverhome.Furrever_Home.dto.user.PasswordDto;
 import com.furreverhome.Furrever_Home.entities.PasswordResetToken;
 import com.furreverhome.Furrever_Home.entities.PetAdopter;
 import com.furreverhome.Furrever_Home.entities.Shelter;
 import com.furreverhome.Furrever_Home.entities.User;
 import com.furreverhome.Furrever_Home.enums.Role;
+import com.furreverhome.Furrever_Home.exception.EmailExistsException;
 import com.furreverhome.Furrever_Home.repository.PasswordTokenRepository;
 import com.furreverhome.Furrever_Home.repository.PetAdopterRepository;
 import com.furreverhome.Furrever_Home.repository.ShelterRepository;
 import com.furreverhome.Furrever_Home.repository.UserRepository;
-import com.furreverhome.Furrever_Home.services.AuthenticationService;
-import com.furreverhome.Furrever_Home.services.JwtService;
+import com.furreverhome.Furrever_Home.services.jwtservices.JwtService;
 import com.furreverhome.Furrever_Home.services.emailservice.EmailService;
 import jakarta.annotation.PostConstruct;
 import jakarta.mail.MessagingException;
@@ -54,7 +52,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final PetAdopterRepository petAdopterRepository;
 
-
+    /**
+     * Creates an admin account if one does not already exist.
+     */
     @PostConstruct
     public void createAdminAccount() {
         User adminAccount = userRepository.findByRole(Role.ADMIN);
@@ -71,6 +71,89 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
     }
 
+    /**
+     * Registers a new user (either a shelter or a pet adopter) and sends a verification email.
+     *
+     * @param appUrl The base URL of the application.
+     * @param signupRequest The request containing the signup details.
+     * @return true if the signup process is successful, false otherwise.
+     * @throws MessagingException if an error occurs while sending the email.
+     */
+    public boolean signup(String appUrl, SignupRequest signupRequest) throws MessagingException {
+        int shelterCheckRole = 2;
+        int petAdopterCheckRole = 1;
+
+        if(userRepository.existsByEmail(signupRequest.getEmail())) {
+            try {
+                throw new EmailExistsException("User Already Exists");
+            } catch (EmailExistsException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        User user = new User();
+        user.setEmail(signupRequest.getEmail());
+        user.setVerified(Boolean.FALSE);
+        user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
+
+        if (signupRequest.getCheckRole() == petAdopterCheckRole) {
+            PetAdopter petAdopter = new PetAdopter();
+
+            petAdopter.setFirstname(((PetAdopterSignupRequest) signupRequest).getFirstName());
+            petAdopter.setLastname(((PetAdopterSignupRequest) signupRequest).getLastName());
+            petAdopter.setPhone_number(((PetAdopterSignupRequest) signupRequest).getPhone_number());
+            petAdopter.setAddress(((PetAdopterSignupRequest) signupRequest).getAddress());
+            petAdopter.setCity(((PetAdopterSignupRequest) signupRequest).getCity());
+            petAdopter.setCountry(((PetAdopterSignupRequest) signupRequest).getCountry());
+            petAdopter.setZipcode(((PetAdopterSignupRequest) signupRequest).getZipcode());
+
+            user.setRole(Role.PETADOPTER);
+            User result = userRepository.save(user);
+            petAdopter.setUser(result);
+
+            petAdopterRepository.save(petAdopter);
+        } else if (signupRequest.getCheckRole() == shelterCheckRole){
+            Shelter shelter = new Shelter();
+            shelter.setName(((ShelterSignupRequest) signupRequest).getName());
+            shelter.setContact(((ShelterSignupRequest) signupRequest).getContact());
+            shelter.setLicense(((ShelterSignupRequest) signupRequest).getLicense());
+            shelter.setCapacity(((ShelterSignupRequest) signupRequest).getCapacity());
+            shelter.setImageBase64(((ShelterSignupRequest) signupRequest).getImageBase64());
+            shelter.setCity(((ShelterSignupRequest) signupRequest).getCity());
+            shelter.setCountry(((ShelterSignupRequest) signupRequest).getCountry());
+            shelter.setAddress(((ShelterSignupRequest) signupRequest).getAddress());
+            shelter.setZipcode(((ShelterSignupRequest) signupRequest).getZipcode());
+            shelter.setRejected(Boolean.FALSE);
+
+            user.setRole(Role.SHELTER);
+            User result = userRepository.save(user);
+            shelter.setUser(result);
+
+            shelterRepository.save(shelter);
+        } else {
+            throw new RuntimeException("Registration details is incorrect.");
+        }
+
+        String url = appUrl + "/api/auth/verify/" + signupRequest.getEmail();
+        String linkText = "Click here to verify your email.";
+        String message = "<p>Please use the link below to verify your email.</p>"
+                + "<a href=\"" + url + "\">" + linkText + "</a>";
+        // TODO: Separate the logic for the code to send email from here.
+        emailService.sendEmail(signupRequest.getEmail(), "Email Verification",
+                message, true);
+
+        return true;
+    }
+
+    /**
+     * Authenticates a user based on the provided signin request.
+     *
+     * @param signinRequest The request containing the signin details.
+     * @return The JWT authentication response if authentication is successful.
+     * @throws BadCredentialsException if the provided credentials are invalid.
+     * @throws DisabledException if the user account is disabled.
+     * @throws UsernameNotFoundException if the username is not found.
+     */
     public JwtAuthenticationResponse signin(SigninRequest signinRequest) throws
             BadCredentialsException,
             DisabledException,
@@ -83,7 +166,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new BadCredentialsException("Incorrect username or password");
         }
 
-        var user = userRepository.findByEmail(signinRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException("Invalid email and password"));
+        var user = userRepository.findByEmail(signinRequest.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid email and password"));
         JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
         if(user.getVerified()) {
             Optional<Shelter> optionalShelter = shelterRepository.findByUserId(user.getId());
@@ -95,7 +179,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             jwtAuthenticationResponse.setRefreshToken(refreshToken);
             jwtAuthenticationResponse.setUserRole(user.getRole());
             jwtAuthenticationResponse.setUserId(user.getId());
-            if(optionalShelter.isPresent()) {
+            if(isShelterAccepted(user.getId())) {
                 jwtAuthenticationResponse.setShelterId(optionalShelter.get().getId());
             }
             if(optionalPetAdopter.isPresent()) {
@@ -108,22 +192,31 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return jwtAuthenticationResponse;
     }
 
-    public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
-        String userEmail = jwtService.extractUserName(refreshTokenRequest.getToken());
-        User user = userRepository.findByEmail(userEmail).orElseThrow();
-
-        if(jwtService.isTokenValid(refreshTokenRequest.getToken(), user)) {
-            var jwt = jwtService.generateToken(user);
-
-            JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
-
-            jwtAuthenticationResponse.setToken(jwt);
-            jwtAuthenticationResponse.setRefreshToken(refreshTokenRequest.getToken());
-            return jwtAuthenticationResponse;
+    /**
+     * Checks if the shelter associated with the given user ID is accepted.
+     *
+     * @param userId The ID of the user.
+     * @return true if the shelter is accepted, false otherwise.
+     */
+    public boolean isShelterAccepted (long userId) {
+        Optional<Shelter> optionalShelter = shelterRepository.findByUserId(userId);
+        if(optionalShelter.isPresent()) {
+            Shelter shelter = optionalShelter.get();
+            if(shelter.isAccepted()) {
+                return true;
+            } else {
+                throw new RuntimeException("Admin approval pending..");
+            }
         }
-        return null;
+        return false;
     }
 
+    /**
+     * Verifies a user by email.
+     *
+     * @param email The email of the user to verify.
+     * @return true if the user is successfully verified, false otherwise.
+     */
     public boolean verifyByEmail(String email) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
 
@@ -136,6 +229,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return false;
     }
 
+    /**
+     * Initiates the password reset process by sending a reset email with a password reset token.
+     *
+     * @param contextPath The context path of the application.
+     * @param email The email of the user requesting the password reset.
+     * @return A generic response indicating the status of the password reset request.
+     */
     @Override
     public GenericResponse resetByEmail(final String contextPath, String email) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
@@ -163,6 +263,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
       );
     }
 
+    /**
+     * Resets the user's password based on the provided password reset token.
+     *
+     * @param passwordDto The DTO containing the password reset details.
+     * @return A generic response indicating the status of the password reset operation.
+     */
     @Override
     public GenericResponse resetPassword(PasswordDto passwordDto) {
         String result = validatePasswordResetToken(passwordDto.getToken());
@@ -181,6 +287,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
     }
 
+    /**
+     * Validates a password reset token.
+     *
+     * @param token The password reset token to validate.
+     * @return A string indicating the validation result ("invalidToken", "expired", or null if valid).
+     */
     @Override
     public String validatePasswordResetToken(String token) {
         final PasswordResetToken passToken = passwordTokenRepository.findByToken(token);
@@ -190,6 +302,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 : null;
     }
 
+    /**
+     * Updates the user's password.
+     *
+     * @param passwordDto The DTO containing the password update details.
+     * @return A generic response indicating the status of the password update operation.
+     */
     @Override
     public GenericResponse updateUserPassword(PasswordDto passwordDto) {
         final Optional<User> user = userRepository.findByEmail(passwordDto.getEmail());
@@ -207,6 +325,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     // ============== UTILS ============
 
+    /**
+     * Changes the user's password.
+     *
+     * @param user The user whose password needs to be changed.
+     * @param password The new password.
+     */
     private void changeUserPassword(User user, String password) {
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
@@ -221,14 +345,32 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return passToken.getExpiryDate().before(cal.getTime());
     }
 
+    /**
+     * Checks if the provided old password matches the user's current password.
+     *
+     * @param user The user whose password is being checked.
+     * @param oldPassword The old password to validate.
+     * @return true if the old password is valid, false otherwise.
+     */
     private boolean checkIfValidOldPassword(final User user, final String oldPassword) {
         return passwordEncoder.matches(oldPassword, user.getPassword());
     }
 
+    /**
+     * Retrieves the user associated with the provided password reset token.
+     *
+     * @param token The password reset token.
+     * @return An optional containing the user associated with the token.
+     */
     private Optional<User> getUserByPasswordResetToken(String token) {
         return Optional.ofNullable(passwordTokenRepository.findByToken(token) .getUser());
     }
 
+    /**
+     * Invalidates a password reset token by setting its value to null.
+     *
+     * @param token The password reset token to invalidate.
+     */
     private void invalidateResetToken(String token) {
         PasswordResetToken passwordResetToken = passwordTokenRepository.findByToken(token);
         if (passwordResetToken != null) {

@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react'
-import Logo from '../Logo'
-import { Link } from 'react-router-dom';
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import axios from 'axios';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from "react-toastify";
 import { validatePassword } from '../../utils/helper';
+import Logo from '../Logo';
 
 const PetAdopterRegister = () => {
 
@@ -25,7 +24,8 @@ const PetAdopterRegister = () => {
     country: "",
     zipcode: "",
     phone_number: "",
-    role: "petadopter"
+    role: "petadopter",
+    checkRole: "1"
   })
 
   const handleChange = (event) => {
@@ -48,7 +48,7 @@ const PetAdopterRegister = () => {
         ...formData
       })
         .then((res) => {
-          console.log(res)
+
           setResponse(res)
           setLoading(false)
           toast.info("Verify Your Email!");
@@ -210,43 +210,43 @@ const PetAdopterRegister = () => {
 
               <div>
 
-              <label htmlFor="country" className="text-sm font-medium leading-6 text-gray-900 flex">
-                Country
-              </label>
-              <div className="mt-1">
-                <input
-                  id="country"
-                  name="country"
-                  value={formData.country}
-                  onChange={handleChange}
-                  type="text"
-                  autoComplete="text"
-                  required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  placeholder='Country'
-                />
+                <label htmlFor="country" className="text-sm font-medium leading-6 text-gray-900 flex">
+                  Country
+                </label>
+                <div className="mt-1">
+                  <input
+                    id="country"
+                    name="country"
+                    value={formData.country}
+                    onChange={handleChange}
+                    type="text"
+                    autoComplete="text"
+                    required
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    placeholder='Country'
+                  />
+                </div>
               </div>
-            </div>
 
-            <div>
+              <div>
 
-              <label htmlFor="zipcode" className="text-sm font-medium leading-6 text-gray-900 flex">
-                Zipcode
-              </label>
-              <div className="mt-1">
-                <input
-                  id="zipcode"
-                  name="zipcode"
-                  value={formData.zipcode}
-                  onChange={handleChange}
-                  type="text"
-                  autoComplete="text"
-                  required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  placeholder='Zipcode'
-                />
+                <label htmlFor="zipcode" className="text-sm font-medium leading-6 text-gray-900 flex">
+                  Zipcode
+                </label>
+                <div className="mt-1">
+                  <input
+                    id="zipcode"
+                    name="zipcode"
+                    value={formData.zipcode}
+                    onChange={handleChange}
+                    type="text"
+                    autoComplete="text"
+                    required
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    placeholder='Zipcode'
+                  />
+                </div>
               </div>
-            </div>
             </div>
 
 

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import Pet1 from '/img/pets/1.png'
 import { readLocalStorage } from '../../utils/helper'
 import { toast } from 'react-toastify'
-import UpdatePetDetails from '../Shelter/UpdatePetDetails'
+import UpdatePetIndividualDetails from '../Shelter/UpdatePetIndividualDetails'
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 
 
@@ -17,7 +17,14 @@ const PetDetail = ({
   const token = readLocalStorage("token")
   const [reqExist,setReqExist] = useState(false)
   const sid = readLocalStorage("shelterID")
-  console.log(role)
+
+  console.log(pet)
+
+  const [isAdopted,setIsAdopted] = useState(false)
+
+
+  const navigate = useNavigate()
+ 
 
   if(role === "PETADOPTER"){
     useEffect(()=> {
@@ -54,12 +61,18 @@ const PetDetail = ({
       toast.success("Adoption request sent")
     })
     .catch(error => {
-      console.log(petId + " " + petAdopterID)
       console.log(error)
       toast.error("Cannot send request, Please Try again later")
     })
   }
 
+  const getPetAdoptionRequests=() => {
+    navigate("/shelter/pet/petadoptionrequest",{
+      state:{
+        id:petId,
+      }
+    })
+  }
   return (
         <div className="bg-white w- relative group overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-transform duration-300 ease-in-out hover:-translate-y-2">
             <img
@@ -74,17 +87,30 @@ const PetDetail = ({
               <p className="flex items-center gap-1">Birth date : {pet.birthdate}</p>
               <p className="flex items-center gap-1">Gender : {pet.gender}</p>
               <p className="flex items-center gap-1">Breed : {pet.breed}</p>
+              <p className="flex items-center gap-1">Medical History : {pet.petMedicalHistory == null ? "none" : pet.petMedicalHistory}</p>
               <p className="flex items-center gap-1">Color : {pet.colour}</p>          
             </div>
             <div>
 
             { role === "PETADOPTER" ?
+                pet.adopted ? <p className="flex items-center fonr-bold text-red-500 gap-1">This pet is already adopted</p> :
                 reqExist ? <p className="flex items-center fonr-bold text-green-500 gap-1">You have sent request for this pet </p> : <button type="button" onClick={handleAdoptionRequest} className="btn btn-orange mx-auto lg:h-10 sm:h-15">Adopt</button> 
                 : 
-                <div className="flex justify-center"> 
+                pet.adopted ? <p className="flex items-center fonr-bold text-red-500 gap-1">This pet is already adopted</p> :
+                  
+
+                <>
+                  <div className="flex justify-center"> 
                     <span className="text-lg font-normal py-2 mr-3">Want to edit Pet details ? </span>
-                    <UpdatePetDetails pets={pet} sid={sid} />
-                </div>
+                    <UpdatePetIndividualDetails pets={pet} sid={sid} />
+                  </div>
+                  <div className="flex justify-center"> 
+                    <button type="button" onClick={getPetAdoptionRequests} className="btn btn-orange mx-auto lg:h-10 sm:h-15">See Pet Adoption Requests</button>             
+                  </div>
+                
+                </>
+                
+                
             }
 
             </div>

@@ -4,7 +4,6 @@ import com.furreverhome.Furrever_Home.entities.Pet;
 import com.furreverhome.Furrever_Home.entities.PetVaccinationInfo;
 import com.furreverhome.Furrever_Home.entities.Shelter;
 import com.furreverhome.Furrever_Home.repository.PetVaccinationInfoRepository;
-import com.furreverhome.Furrever_Home.services.NotificationService;
 import com.furreverhome.Furrever_Home.services.emailservice.EmailService;
 import jakarta.mail.MessagingException;
 import org.slf4j.Logger;
@@ -22,6 +21,14 @@ public class NotificationServiceImpl implements NotificationService {
     private final PetVaccinationInfoRepository petVaccinationInfoRepository;
     private final EmailService emailService;
 
+    private final int notificationPeriod = 7;
+
+    /**
+     * Constructs a new instance of NotificationServiceImpl with the specified repositories.
+     *
+     * @param petVaccinationInfoRepository The repository for pet vaccination information.
+     * @param emailService                 The service for sending email notifications.
+     */
     public NotificationServiceImpl(PetVaccinationInfoRepository petVaccinationInfoRepository, EmailService emailService) {
         this.petVaccinationInfoRepository = petVaccinationInfoRepository;
         this.emailService = emailService;
@@ -29,6 +36,10 @@ public class NotificationServiceImpl implements NotificationService {
 
     private static final Logger log = LoggerFactory.getLogger(NotificationServiceImpl.class);
 
+    /**
+     * Sends vaccination reminders for pets with upcoming vaccinations.
+     * This method is scheduled to run daily at 12 AM.
+     */
     @Transactional(readOnly = true)
 //    @Scheduled(fixedRate = 10000)
     @Scheduled(cron = "0 0 0 * * ?") // This runs at 12 AM every day
@@ -36,7 +47,7 @@ public class NotificationServiceImpl implements NotificationService {
     public void sendVaccinationReminders() {
 
         LocalDate today = LocalDate.now();
-        LocalDate nextWeek = today.plusDays(7);
+        LocalDate nextWeek = today.plusDays(notificationPeriod);
 
         List<PetVaccinationInfo> dueVaccinations = petVaccinationInfoRepository.findAllWithNextVaccinationDueBetween(today, nextWeek);
 
@@ -53,7 +64,6 @@ public class NotificationServiceImpl implements NotificationService {
                     pet.getPetID(),
                     vaccinationInfo.getNextVaccinationDate().format(DateTimeFormatter.ofPattern("EEE MMM d, yyyy"))
             );
-
             try {
                 emailService.sendEmail(to, subject, body, false); // Choose HTML or plaintext based on your preference
             } catch (MessagingException e) {

@@ -9,7 +9,7 @@ import { ToastContainer, toast } from "react-toastify";
 const PetForAdopter = () => {
     
     const location = useLocation();
-    console.log(location)
+
     const petId = location.state.id;
     const [pet,setPet] = useState({
       type:"",
@@ -17,8 +17,10 @@ const PetForAdopter = () => {
       birthdate:"",
       gender:"",
       colour:"",
+      petMedicalHistory:"",
       petImage:"",
-      petID:""
+      petID:"",
+      adopted:""
     })
     const [shelter,setShelter] = useState({
       name:"",
@@ -39,7 +41,7 @@ const PetForAdopter = () => {
       })
       .then((response) => {
         
-        console.log(response.data)
+
         const DOB = response.data.birthdate.substring(0,10)
         setPet({
           type:response.data.type,
@@ -47,12 +49,14 @@ const PetForAdopter = () => {
           birthdate:DOB,
           gender:response.data.gender,
           colour:response.data.colour,
+          petMedicalHistory:response.data.petMedicalHistory,
           petImage:response.data.petImage,
-          petID:response.data.petID
+          petID:response.data.petID,
+          adopted:response.data.adopted
         })
 
         const res = response.data.shelter
-        console.log(res)
+
 
         setShelter({
           name:res.name,
@@ -62,7 +66,7 @@ const PetForAdopter = () => {
           contact:res.contact
         })
         setVaccine(response.data.vaccineNameList)
-        console.log(response.data.vaccineNameList)
+
       })
       .catch(error => {
         toast.error("Cannot get pet details")
@@ -70,7 +74,7 @@ const PetForAdopter = () => {
       })
     },[])
 
-    console.log(petId);
+
 
   return (
 

@@ -16,20 +16,4 @@ public interface ChatProviderService {
 
     @NotNull
     String getToken(@NotNull String userId, Date expiresAt, Date issuedAt);
-
-    /**
-     * Gets pet chat user id.
-     *
-     * @param userId the user id
-     * @return the pet chat user id
-     */
-    String getPetChatUserId(long userId);
-
-    /**
-     * Gets shelter chat user id.
-     *
-     * @param userId the user id
-     * @return the shelter chat user id
-     */
-    String getShelterChatUserId(long userId);
 }
