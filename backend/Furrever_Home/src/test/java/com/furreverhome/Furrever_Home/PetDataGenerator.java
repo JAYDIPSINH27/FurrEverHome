@@ -9,6 +9,17 @@ import java.time.LocalDate;
 import java.util.Date;
 
 public class PetDataGenerator {
+
+    /**
+     * Creates a mock PetVaccinationInfo object with the provided parameters.
+     *
+     * @param petId               The ID of the pet.
+     * @param type                The type of the pet.
+     * @param breed               The breed of the pet.
+     * @param lastVaccinationDate The date of the last vaccination.
+     * @param nextVaccinationDate The date of the next vaccination.
+     * @return A PetVaccinationInfo object with mock data.
+     */
     public static PetVaccinationInfo createMockPetVaccinationInfo(Long petId, String type, String breed, LocalDate lastVaccinationDate, LocalDate nextVaccinationDate) {
         Pet pet = new Pet();
         pet.setPetID(petId);

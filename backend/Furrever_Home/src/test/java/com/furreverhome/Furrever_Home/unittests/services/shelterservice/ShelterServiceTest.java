@@ -1,4 +1,4 @@
-package com.furreverhome.Furrever_Home.unittests.services;
+package com.furreverhome.Furrever_Home.unittests.services.shelterservice;
 
 import com.furreverhome.Furrever_Home.dto.GenericResponse;
 import com.furreverhome.Furrever_Home.dto.Pet.PetAdoptionRequestResponseDto;
@@ -42,6 +42,10 @@ public class ShelterServiceTest {
     @Mock
     private ShelterRepository shelterRepository;
 
+    /**
+     * Test case for deleting a pet when the pet is not found.
+     * Verifies that a RuntimeException is thrown and the pet is not deleted.
+     */
     @Test
     void deletePetNotFoundTest(){
         Long petID = 2L;
@@ -50,6 +54,10 @@ public class ShelterServiceTest {
         verify(petRepository, never()).deleteById(anyLong());
     }
 
+    /**
+     * Test case for deleting a pet successfully.
+     * Verifies that the pet is deleted and the appropriate response message is returned.
+     */
     @Test
     void deletePetSuccess(){
         Long petID = 2L;
@@ -59,6 +67,11 @@ public class ShelterServiceTest {
         assertEquals("Pet deleted.", response.getMessage());
     }
 
+    /**
+     * Test case to verify that editing a pet fails when the pet is not found.
+     * It ensures that attempting to edit a nonexistent pet results in an exception.
+     * Also, verifies that no pet is saved.
+     */
     @Test
     void editPetNotFound() {
         Long petID = 2L;
@@ -69,8 +82,14 @@ public class ShelterServiceTest {
         verify(petRepository, never()).save(any(Pet.class));
     }
 
+    /**
+     * Test case for successfully editing a pet.
+     * Verifies that the pet details are updated correctly.
+     *
+     * @throws ParseException if there is an error in parsing the birthdate
+     */
     @Test
-    void editPet_Success() throws ParseException {
+    void editPetSuccess() throws ParseException {
         Long petID = 2L;
         RegisterPetRequest updatePetRequest = new RegisterPetRequest();
         updatePetRequest.setType("Dog");
@@ -94,6 +113,10 @@ public class ShelterServiceTest {
         assertEquals(updatePetRequest.getPetImage(), updatedPet.getPetImage());
     }
 
+    /**
+     * Test case for setting the adopted status of a pet to "Adopted".
+     * Verifies that the adopted status is correctly set to true.
+     */
     @Test
     void petAdoptedStatusSuccess() {
         Long petID = 2L;
@@ -107,6 +130,10 @@ public class ShelterServiceTest {
         assertTrue(pet.isAdopted());
     }
 
+    /**
+     * Test case for setting the adopted status of a pet to "NotAdopted".
+     * Verifies that the adopted status is correctly set to false.
+     */
     @Test
     void petNotAdoptedStatusSuccess() {
         Long petID = 2L;
@@ -120,6 +147,10 @@ public class ShelterServiceTest {
         assertFalse(pet.isAdopted());
     }
 
+    /**
+     * Test case to verify that an exception is thrown when attempting to retrieve adoption requests for a pet that does not exist.
+     * It ensures that a RuntimeException is thrown with the appropriate message.
+     */
     @Test
     void getPetAdoptionRequestsException() {
         Long petId = 2L;
@@ -128,6 +159,10 @@ public class ShelterServiceTest {
         assertEquals("Requests with petID " + petId + " not found", exception.getMessage());
     }
 
+    /**
+     * Test case to verify successful retrieval of adoption requests for a pet.
+     * It ensures that the correct PetAdoptionRequestResponseDto is returned with the expected pet ID.
+     */
     @Test
     void getPetAdoptionRequestsSuccess() {
         Long petId = 2L;
@@ -144,6 +179,10 @@ public class ShelterServiceTest {
 //        assertEquals(Collections.singletonList(petAdopter.getId()), result.getPetAdopters());
     }
 
+    /**
+     * Test case to verify that an exception is thrown when attempting to retrieve pets for a shelter that does not exist.
+     * It ensures that a RuntimeException is thrown with the appropriate message.
+     */
     @Test
     void getPetsForShelterShelterNotFound() {
         Long shelterId = 2L;
@@ -152,6 +191,10 @@ public class ShelterServiceTest {
         assertEquals("Shelter with ID " + shelterId + " not found", exception.getMessage());
     }
 
+    /**
+     * Test case to verify successful retrieval of pets for a shelter.
+     * It ensures that an empty list of petDtos is returned when the shelter has no pets.
+     */
     @Test
     void getPetsForShelterShelterFound() {
         Long shelterId = 2L;
@@ -164,6 +207,10 @@ public class ShelterServiceTest {
         assertTrue(petDtos.isEmpty());
     }
 
+    /**
+     * Test case to verify the behavior when attempting to change the adopted status of a pet that does not exist.
+     * It ensures that the method returns false when the pet is not found.
+     */
     @Test
     void testChangePetAdoptedStatusWhenPetNotFound(){
         when(petRepository.findById(1L)).thenReturn(Optional.empty());
@@ -173,6 +220,10 @@ public class ShelterServiceTest {
         assertFalse(result);
     }
 
+    /**
+     * Test case to verify the registration of a new pet.
+     * It ensures that the pet is saved successfully and the correct PetDto is returned.
+     */
     @Test
     void registerPet_ShouldSavePetAndReturnPetDto() throws Exception {
 

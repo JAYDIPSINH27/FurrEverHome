@@ -34,6 +34,10 @@ public class ChatControllerTest {
                 .build();
     }
 
+    /**
+     * Tests the {@link ChatController#startChatSession(long, long)} method.
+     * Verifies that the controller returns a valid chat session response when starting a chat session.
+     */
     @Test
     void testStartChatSession() throws Exception {
         long fromUserId = 1L;
@@ -53,6 +57,10 @@ public class ChatControllerTest {
         verify(chatService).createChatSession(eq(fromUserId), eq(toUserId));
     }
 
+    /**
+     * Tests the getChatHistory method.
+     * Verifies that the controller returns the chat history for a given user.
+     */
     @Test
     void testGetChatHistory() throws Exception {
         long userId = 1L;
@@ -72,6 +80,10 @@ public class ChatControllerTest {
         verify(chatService).getChatHistory(eq(userId));
     }
 
+    /**
+     * Tests the {@link ChatController#startChatSession(long, long)} method with an invalid user ID.
+     * Verifies that the controller returns a bad request status when an invalid user ID is provided.
+     */
     @Test
     void testStartChatSessionWithInvalidUserId() throws Exception {
         mockMvc.perform(get("/api/chats/from/{fromUserId}/to/{toUserId}", "invalid", 2L))

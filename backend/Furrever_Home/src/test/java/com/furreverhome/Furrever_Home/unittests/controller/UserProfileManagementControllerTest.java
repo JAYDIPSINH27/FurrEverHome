@@ -50,6 +50,10 @@ public class UserProfileManagementControllerTest {
         objectMapper = new ObjectMapper();
     }
 
+    /**
+     * Test case to verify the successful update of a user profile.
+     * Verifies that the user profile is successfully updated and returns a 200 OK response with the updated profile details.
+     */
     @Test
     void testUpdateUserProfile() throws Exception {
         Long userId = 1L;
@@ -85,6 +89,10 @@ public class UserProfileManagementControllerTest {
         verify(userProfileManagementService).updateUserProfile(anyLong(), any(UpdateUserProfileRequestDto.class));
     }
 
+    /**
+     * Test case to verify the successful retrieval of a user profile.
+     * Verifies that the user profile is successfully retrieved and returns a 200 OK response with the profile details.
+     */
     @Test
     void testGetUserProfileSuccess() throws Exception {
         Long userId = 1L;
@@ -110,6 +118,10 @@ public class UserProfileManagementControllerTest {
         verify(userProfileManagementService).getUserProfile(eq(userId));
     }
 
+    /**
+     * Test case to verify the handling of a user profile not found scenario.
+     * Verifies that an appropriate response with status 404 is returned when the user profile is not found.
+     */
     @Test
     void testGetUserProfileNotFound() throws Exception {
         Long userId = 2L;
@@ -122,6 +134,10 @@ public class UserProfileManagementControllerTest {
         verify(userProfileManagementService).getUserProfile(eq(userId));
     }
 
+    /**
+     * Test case to verify the successful update of a shelter profile.
+     * Verifies that the shelter profile is successfully updated and returns a 200 OK response with the updated profile details.
+     */
     @Test
     void testUpdateShelterProfileSuccess() throws Exception {
         Long shelterId = 1L;
@@ -162,6 +178,10 @@ public class UserProfileManagementControllerTest {
         verify(userProfileManagementService).updateShelterProfile(eq(shelterId), any(UpdateShelterProfileRequestDto.class));
     }
 
+    /**
+     * Test case to verify the handling of a shelter profile not found scenario.
+     * Verifies that an appropriate response with status 404 is returned when the shelter profile is not found.
+     */
     @Test
     void testUpdateShelterProfileNotFound() throws Exception {
         Long shelterId = 2L;
@@ -188,6 +208,10 @@ public class UserProfileManagementControllerTest {
         verify(userProfileManagementService).updateShelterProfile(eq(shelterId), any(UpdateShelterProfileRequestDto.class));
     }
 
+    /**
+     * Test case to verify the handling of unauthorized user profile updates.
+     * Verifies that an appropriate response with status 500 (Internal Server Error) is returned when the update request is unauthorized.
+     */
     @Test
     void testUpdateUserProfileUnauthorized() throws Exception {
         Long userId = 1L;

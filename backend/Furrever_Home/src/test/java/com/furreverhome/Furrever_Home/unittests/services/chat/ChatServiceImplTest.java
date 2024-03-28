@@ -1,4 +1,4 @@
-package com.furreverhome.Furrever_Home.unittests.services;
+package com.furreverhome.Furrever_Home.unittests.services.chat;
 
 import com.furreverhome.Furrever_Home.dto.chat.ChatCredentialsResponse;
 import com.furreverhome.Furrever_Home.entities.PetAdopter;
@@ -69,6 +69,10 @@ public class ChatServiceImplTest {
         shelter.setName("Happy Paws");
     }
 
+    /**
+     * Test case for creating a chat session from a Pet Adopter to a Shelter.
+     * It verifies that a chat session is created successfully.
+     */
     @Test
     void createChatSession_fromPetAdopterToShelter_createsSessionSuccessfully() throws Exception {
         // Mock the repository and service method responses
@@ -97,6 +101,10 @@ public class ChatServiceImplTest {
         verify(chatProviderService).getToken(anyString(), any(), any());
     }
 
+    /**
+     * Test case for creating a chat session from a Shelter to a Pet Adopter.
+     * It verifies that a chat session is created successfully.
+     */
     @Test
     void createChatSession_fromShelterToPetAdopter_createsSessionSuccessfully() throws Exception {
         // Mock the repository and service method responses
@@ -126,6 +134,10 @@ public class ChatServiceImplTest {
         verify(chatProviderService).getToken(anyString(), any(), any());
     }
 
+    /**
+     * Test case for getting the chat history for a Pet Adopter.
+     * It verifies that the chat history is retrieved successfully.
+     */
     @Test
     void getPetChatHistory_withValidUserId_returnsChatHistorySuccessfully() throws Exception {
         // Assuming getChatHistory simply validates the user and returns a token
@@ -152,6 +164,10 @@ public class ChatServiceImplTest {
         verify(chatProviderService).getToken(anyString(), any(), any());
     }
 
+    /**
+     * Test case for getting the chat history for a Shelter.
+     * It verifies that the chat history is retrieved successfully.
+     */
     @Test
     void getShelterChatHistory_withValidUserId_returnsChatHistorySuccessfully() throws Exception {
         when(userRepository.findById(shelterUser.getId())).thenReturn(Optional.of(shelterUser));
@@ -177,6 +193,10 @@ public class ChatServiceImplTest {
         verify(chatProviderService).getToken(anyString(), any(), any());
     }
 
+    /**
+     * Test case for creating a chat session with a nonexistent user ID.
+     * It verifies that a ResponseStatusException is thrown.
+     */
     @Test
     void createChatSession_withNonexistentUserId_throwsResponseStatusException() {
         long nonexistentUserId = 999L;
@@ -186,6 +206,10 @@ public class ChatServiceImplTest {
         assertThrows(ResponseStatusException.class, () -> chatService.createChatSession(petAdopterUser.getId(), nonexistentUserId));
     }
 
+    /**
+     * Test case for getting the chat history with a nonexistent user ID.
+     * It verifies that a ResponseStatusException is thrown.
+     */
     @Test
     void getChatHistory_withNonexistentUserId_throwsResponseStatusException() {
         long nonexistentUserId = 999L; // Assuming this ID doesn't exist

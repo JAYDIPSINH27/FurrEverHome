@@ -49,6 +49,9 @@ public class LostPetServiceImplTest {
     private User user;
     private RegisterLostPetDto registerLostPetDto;
 
+    /**
+     * Sets up the mock objects and initializes test data before each test method.
+     */
     @BeforeEach
     void setUp() {
         // Initialize the User and RegisterLostPetDto objects
@@ -66,6 +69,9 @@ public class LostPetServiceImplTest {
         registerLostPetDto.setEmail(user.getEmail());
     }
 
+    /**
+     * Tests registering a lost pet successfully.
+     */
     @Test
     void testRegisterLostPetSuccess() {
         // Setup the mock behavior
@@ -94,6 +100,9 @@ public class LostPetServiceImplTest {
         verify(lostPetRepository, times(1)).save(any(LostPet.class));
     }
 
+    /**
+     * Tests registering a lost pet when the user is not found.
+     */
     @Test
     void testRegisterLostPetUserNotFound() {
         // Setup
@@ -112,7 +121,9 @@ public class LostPetServiceImplTest {
         verify(lostPetRepository, never()).save(any(LostPet.class));
     }
 
-
+    /**
+     * Tests retrieving all lost pets successfully.
+     */
     @Test
     void testGetAllLostPets() {
         // Mock the LostPet
@@ -131,7 +142,9 @@ public class LostPetServiceImplTest {
         verify(lostPetRepository, times(1)).findAll();
     }
 
-
+    /**
+     * Tests searching for lost pets.
+     */
     @Test
     void testSearchLostPet() {
         SearchPetDto searchPetDto = new SearchPetDto();
@@ -154,7 +167,9 @@ public class LostPetServiceImplTest {
         verify(lostPetRepository, times(1)).findAll(any(Example.class));
     }
 
-
+    /**
+     * Tests retrieving lost pets by user.
+     */
     @Test
     void testReturnLostPetListWhenUserExistsWithLostPets() {
         LostPet lostPet1 = new LostPet();
@@ -176,6 +191,9 @@ public class LostPetServiceImplTest {
         verify(lostPetRepository, times(1)).findByUser(user);
     }
 
+    /**
+     * Tests throwing a {@link UserNotFoundException} when the user does not exist.
+     */
     @Test
     void testThrowUserNotFoundExceptionWhenUserDoesNotExist() {
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
@@ -188,6 +206,9 @@ public class LostPetServiceImplTest {
         verify(lostPetRepository, never()).findByUser(any(User.class));
     }
 
+    /**
+     * Tests throwing a {@link RuntimeException} when the user exists but has no lost pets.
+     */
     @Test
     void testThrowRuntimeExceptionWhenUserExistsButNoLostPets() {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
@@ -201,6 +222,9 @@ public class LostPetServiceImplTest {
         verify(lostPetRepository, times(1)).findByUser(user);
     }
 
+    /**
+     * Tests updating lost pet details when the lost pet exists.
+     */
     @Test
     void testUpdateLostPetDetailsWhenLostPetExists() {
         LostPetDto lostPetDto = new LostPetDto();
@@ -224,6 +248,9 @@ public class LostPetServiceImplTest {
         verify(lostPetRepository, times(1)).save(lostPet);
     }
 
+    /**
+     * Tests updating lost pet details when the lost pet does not exist.
+     */
     @Test
     void testUpdateLostPetDetailsWhenLostPetDoesNotExist() {
         LostPetDto lostPetDto = new LostPetDto();

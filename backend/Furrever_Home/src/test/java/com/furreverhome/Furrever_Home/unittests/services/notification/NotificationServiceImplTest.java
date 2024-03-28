@@ -1,4 +1,4 @@
-package com.furreverhome.Furrever_Home.unittests.services;
+package com.furreverhome.Furrever_Home.unittests.services.notification;
 
 import com.furreverhome.Furrever_Home.PetDataGenerator;
 import com.furreverhome.Furrever_Home.entities.PetVaccinationInfo;
@@ -35,6 +35,10 @@ public class NotificationServiceImplTest {
         MockitoAnnotations.openMocks(this);
     }
 
+    /**
+     * Test case for sending vaccination reminders.
+     * It verifies that emails are sent for pets with due vaccinations.
+     */
     @Test
     public void testSendVaccinationReminders_sendsEmails() throws Exception {
         // Arrange
@@ -54,6 +58,10 @@ public class NotificationServiceImplTest {
         verify(emailService, times(dueVaccinations.size())).sendEmail(anyString(), anyString(), anyString(), eq(false));
     }
 
+    /**
+     * Test case for sending vaccination reminders when no vaccinations are due.
+     * It verifies that no emails are sent.
+     */
     @Test
     public void testSendVaccinationReminders_sendsNoEmailsWhenNoDueVaccinations() throws Exception {
         // Arrange
@@ -67,6 +75,10 @@ public class NotificationServiceImplTest {
         verify(emailService, never()).sendEmail(anyString(), anyString(), anyString(), eq(false));
     }
 
+    /**
+     * Test case for handling errors during vaccination reminder emails sending.
+     * It verifies that the service handles email sending errors gracefully.
+     */
     @Test
     public void testSendVaccinationReminders_handlesEmailSendingErrors() throws Exception {
         // Arrange

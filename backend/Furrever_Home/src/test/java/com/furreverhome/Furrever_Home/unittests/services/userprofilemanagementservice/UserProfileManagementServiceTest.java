@@ -1,4 +1,4 @@
-package com.furreverhome.Furrever_Home.unittests.services;
+package com.furreverhome.Furrever_Home.unittests.services.userprofilemanagementservice;
 
 import com.furreverhome.Furrever_Home.dto.profile.*;
 import com.furreverhome.Furrever_Home.entities.PetAdopter;
@@ -34,6 +34,9 @@ public class UserProfileManagementServiceTest {
     @InjectMocks
     private UserProfileManagementService userProfileManagementService;
 
+    /**
+     * Test case to verify the successful update of a user profile when the user exists.
+     */
     @Test
     void updateUserProfileWhenUserExists() {
         // Arrange
@@ -67,6 +70,10 @@ public class UserProfileManagementServiceTest {
         verify(userProfileMapper).toUpdateUserProfileResponseDto(updatedPetAdopter);
     }
 
+    /**
+     * Test case to verify the behavior when attempting to update a user profile when the user does not exist.
+     * It ensures that an EntityNotFoundException is thrown.
+     */
     @Test
     void updateUserProfileWhenUserDoesNotExist() {
         // Arrange
@@ -93,7 +100,9 @@ public class UserProfileManagementServiceTest {
         verify(petAdopterRepository, never()).save(any());
     }
 
-
+    /**
+     * Test case to verify the retrieval of a user profile when the user exists.
+     */
     @Test
     void getUserProfileWhenUserExists() {
         // Arrange
@@ -122,6 +131,10 @@ public class UserProfileManagementServiceTest {
         verify(userProfileMapper).toUpdateUserProfileResponseDto(petAdopter);
     }
 
+    /**
+     * Test case to verify the behavior when attempting to retrieve a user profile when the user does not exist.
+     * It ensures that an EntityNotFoundException is thrown.
+     */
     @Test
     void getUserProfileWhenUserDoesNotExist() {
         // Arrange
@@ -135,6 +148,9 @@ public class UserProfileManagementServiceTest {
         verify(petAdopterRepository).findByUserId(userId);
     }
 
+    /**
+     * Test case to verify the successful update of a shelter profile when the shelter exists.
+     */
     @Test
     void updateShelterProfileWhenShelterExists() {
         // Arrange
@@ -181,6 +197,9 @@ public class UserProfileManagementServiceTest {
         verify(userProfileMapper).toUpdateShelterProfileResponseDto(updatedShelter);
     }
 
+    /**
+     * Test updateShelterProfile method when the shelter does not exist.
+     */
     @Test
     void updateShelterProfileWhenShelterDoesNotExist() {
         // Arrange
@@ -207,6 +226,9 @@ public class UserProfileManagementServiceTest {
         verify(shelterRepository, never()).save(any());
     }
 
+    /**
+     * Test getShelterProfile method when the shelter exists.
+     */
     @Test
     void getShelterProfileWhenShelterExists() {
         // Arrange
@@ -237,6 +259,9 @@ public class UserProfileManagementServiceTest {
         verify(userProfileMapper).toUpdateShelterProfileResponseDto(shelter);
     }
 
+    /**
+     * Test getShelterProfile method when the shelter does not exist.
+     */
     @Test
     void getShelterProfileWhenShelterDoesNotExist() {
         // Arrange

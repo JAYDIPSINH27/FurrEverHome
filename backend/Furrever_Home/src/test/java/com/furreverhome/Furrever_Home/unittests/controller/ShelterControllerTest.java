@@ -50,6 +50,10 @@ public class ShelterControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(shelterController).build();
     }
 
+    /**
+     * Test case to verify successful registration of a pet in the shelter.
+     * @throws Exception If an error occurs during the test execution.
+     */
     @Test
     void registerPetInShelterSuccessfulRegistration() throws Exception {
         RegisterPetRequest request = new RegisterPetRequest();
@@ -70,6 +74,9 @@ public class ShelterControllerTest {
                 .andExpect(status().isOk());
     }
 
+    /**
+     * Test case to verify successful editing of a pet in the shelter.
+     */
     @Test
     void editPetInShelter_Success() {
         RegisterPetRequest registerPetRequest = new RegisterPetRequest();
@@ -99,6 +106,10 @@ public class ShelterControllerTest {
         assertEquals(updatedPetDto, responseEntity.getBody());
     }
 
+    /**
+     * Test case to verify successful deletion of a pet in the shelter.
+     * Verifies that the pet is successfully deleted and returns a 200 OK response with a message indicating success.
+     */
     @Test
     void deletePetInShelterDeletedSuccessfully() {
         Long petID = 2L;
@@ -110,6 +121,11 @@ public class ShelterControllerTest {
         assertEquals("Pet deleted.", responseEntity.getBody().getMessage());
     }
 
+    /**
+     * Test case to verify successful addition of a vaccine for a pet in the shelter.
+     * Verifies that the vaccine is successfully added and returns a 200 OK response.
+     * @throws Exception If an error occurs during the test execution.
+     */
     @Test
     void addVaccineSuccessfulAddition() throws Exception {
         long petId = 2L;
@@ -126,6 +142,10 @@ public class ShelterControllerTest {
                 .andExpect(status().isOk());
     }
 
+    /**
+     * Test case to verify successful change of adopted status for a pet in the shelter.
+     * Verifies that the adopted status is successfully changed and returns a 200 OK response.
+     */
     @Test
     void changeAdoptedStatusChangedSuccessfully() {
         Long petId = 1L;
@@ -136,8 +156,12 @@ public class ShelterControllerTest {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
+    /**
+     * Test case to verify failure in changing adopted status for a pet in the shelter.
+     * Verifies that the adopted status change fails and returns a 404 Not Found response.
+     */
     @Test
-    void changeAdoptedStatus_Failure_ReturnsNotFound() {
+    void changeAdoptedStatusFailureReturnsNotFound() {
         Long petId = 1L;
         String status = "adopted";
         when(shelterService.changeAdoptedStatus(eq(petId), eq(status))).thenReturn(false);
@@ -145,6 +169,11 @@ public class ShelterControllerTest {
         verify(shelterService, times(1)).changeAdoptedStatus(eq(petId), eq(status));
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
     }
+
+    /**
+     * Test case to verify successful retrieval of pet information by ID.
+     * Verifies that the pet information is successfully retrieved and returns a 200 OK response with the pet DTO.
+     */
     @Test
     void getPetInfoRetrievedSuccessfully() {
         Long petID = 1L;
@@ -159,6 +188,10 @@ public class ShelterControllerTest {
         assertEquals(petDto, responseEntity.getBody());
     }
 
+    /**
+     * Test case to verify successful retrieval of pet adoption requests by pet ID.
+     * Verifies that the pet adoption requests are successfully retrieved and returns a 200 OK response with the adoption request DTO.
+     */
     @Test
     void getPetAdoptionRequestsRetrievedSuccessfully() {
         Long petID = 1L;
@@ -172,8 +205,12 @@ public class ShelterControllerTest {
         assertEquals(adoptionRequestResponseDto, responseEntity.getBody());
     }
 
+    /**
+     * Test case to verify successful retrieval of pets in a shelter by shelter ID.
+     * Verifies that the pets in the shelter are successfully retrieved and returns a 200 OK response with the list of pet DTOs.
+     */
     @Test
-    void getPetInShelter_ReturnsListOfPets() {
+    void getPetInShelterReturnsListOfPets() {
         Long shelterID = 1L;
         List<PetDto> pets = new ArrayList<>();
         PetDto pet1 = new PetDto();

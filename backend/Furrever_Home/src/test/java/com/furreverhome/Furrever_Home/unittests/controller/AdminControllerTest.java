@@ -29,11 +29,17 @@ public class AdminControllerTest {
     @InjectMocks
     private AdminController adminController;
 
+    /**
+     * Sets up mock objects before each test method.
+     */
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
     }
 
+    /**
+     * Tests the getAllShelters method in AdminController.
+     */
     @Test
     public void testGetAllShelters() {
         ShelterResponseDto shelterResponseDto = new ShelterResponseDto();
@@ -46,6 +52,9 @@ public class AdminControllerTest {
         assertEquals(shelterResponseDtoList, responseEntity.getBody());
     }
 
+    /**
+     * Tests the changeVerifiedStatus method in AdminController when the status change is successful.
+     */
     @Test
     public void testChangeVerifiedStatus_Success() {
 
@@ -59,6 +68,9 @@ public class AdminControllerTest {
         verify(adminService, times(1)).changeVerifiedStatus(email, status);
     }
 
+    /**
+     * Tests the changeVerifiedStatus method in AdminController when the status change fails.
+     */
     @Test
     public void testChangeVerifiedStatus_Failure() {
 

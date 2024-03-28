@@ -7,6 +7,9 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Unit tests for the {@link PasswordConstraintValidator} class.
+ */
 class PasswordConstraintValidatorTest {
 
     private PasswordConstraintValidator passwordConstraintValidator;

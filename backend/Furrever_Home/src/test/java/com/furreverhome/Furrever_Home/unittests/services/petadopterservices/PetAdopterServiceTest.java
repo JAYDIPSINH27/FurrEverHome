@@ -1,4 +1,4 @@
-package com.furreverhome.Furrever_Home.unittests.services;
+package com.furreverhome.Furrever_Home.unittests.services.petadopterservices;
 
 
 import com.furreverhome.Furrever_Home.dto.GenericResponse;
@@ -38,6 +38,10 @@ public class PetAdopterServiceTest {
     @InjectMocks
     private PetAdopterServiceImpl petAdopterService;
 
+    /**
+     * Test case for successful pet adoption request.
+     * Verifies that the adoption request is successfully processed.
+     */
     @Test
     void adoptPetRequestSuccess() {
         PetAdoptionRequestDto petAdoptionRequestDto = new PetAdoptionRequestDto();
@@ -54,6 +58,10 @@ public class PetAdopterServiceTest {
         assertEquals("Adoption Request Successful.", response.getMessage());
     }
 
+    /**
+     * Test case for pet adoption request when the pet is already adopted.
+     * Verifies that no adoption request is made when the pet is already adopted.
+     */
     @Test
     void adoptPetRequestPetAdopted() {
         PetAdoptionRequestDto petAdoptionRequestDto = new PetAdoptionRequestDto();
@@ -71,6 +79,10 @@ public class PetAdopterServiceTest {
         assertEquals("Pet already adopted", response.getMessage());
     }
 
+    /**
+     * Test case for pet adoption request when the pet or adopter is not found.
+     * Verifies that no adoption request is made when either the pet or adopter is not found.
+     */
     @Test
     void adoptPetRequestNotFound() {
         PetAdoptionRequestDto petAdoptionRequestDto = new PetAdoptionRequestDto();
@@ -85,6 +97,10 @@ public class PetAdopterServiceTest {
         assertEquals("PetAdopter or pet not found.", response.getMessage());
     }
 
+    /**
+     * Test case for checking if a pet adoption request exists when the pet does not exist.
+     * Verifies that false is returned when the pet does not exist.
+     */
     @Test
     public void requestExistsPetDoesNotExist() {
         long petID = 1L;
@@ -95,6 +111,10 @@ public class PetAdopterServiceTest {
         assertFalse(result);
     }
 
+    /**
+     * Test case for checking if a pet adoption request exists when the pet adopter does not exist.
+     * Verifies that false is returned when the pet adopter does not exist.
+     */
     @Test
     public void requestExistsPetAdopterDoesNotExist() {
         long petID = 2L;
@@ -105,6 +125,10 @@ public class PetAdopterServiceTest {
         assertFalse(result);
     }
 
+    /**
+     * Test case for checking if a pet adoption request exists when both the pet and pet adopter do not exist.
+     * Verifies that false is returned when both the pet and pet adopter do not exist.
+     */
     @Test
     public void requestExistsBothDoNotExist() {
         long petID = 2L;
@@ -114,5 +138,4 @@ public class PetAdopterServiceTest {
         boolean result = petAdopterService.requestExists(petID, petAdopterID);
         assertFalse(result);
     }
-
 }

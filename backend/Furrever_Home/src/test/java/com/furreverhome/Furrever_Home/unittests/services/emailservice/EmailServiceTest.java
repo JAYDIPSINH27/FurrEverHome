@@ -27,6 +27,9 @@ class EmailServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
+    /**
+     * Tests sending an email with a simple message.
+     */
     @Test
     void testSendEmailWithSimpleMessageShouldSucceed() {
         // Arrange

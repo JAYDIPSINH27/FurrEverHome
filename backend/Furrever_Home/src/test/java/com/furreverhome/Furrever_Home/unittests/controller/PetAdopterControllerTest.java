@@ -90,6 +90,10 @@ public class PetAdopterControllerTest {
         lostPet.setGender("Male");
     }
 
+    /**
+     * Test case to verify that getAllShelters method returns the list returned by the service method.
+     * @throws Exception If an error occurs during the test execution.
+     */
     @Test
     public void testGetAllSheltersReturnsListReturnedByServiceMethod() throws Exception{
         List<ShelterResponseDto> expectedResults = new ArrayList<>();
@@ -102,6 +106,10 @@ public class PetAdopterControllerTest {
                 .andExpect(status().isOk());
     }
 
+    /**
+     * Test case to verify the retrieval of a pet adopter by user ID when the user exists.
+     * @throws Exception If an error occurs during the test execution.
+     */
     @Test
     public void testGetPetAdopterByUserWhenUserExist() throws Exception{
 
@@ -112,6 +120,10 @@ public class PetAdopterControllerTest {
 
     }
 
+    /**
+     * Test case to verify the retrieval of a pet adopter by user ID when the user does not exist.
+     * @throws Exception If an error occurs during the test execution.
+     */
     @Test
     public void testGetPetAdopterByUserWhenUserDoesNotExist() throws Exception{
 
@@ -121,6 +133,10 @@ public class PetAdopterControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    /**
+     * Test case to verify the search for shelters.
+     * @throws Exception If an error occurs during the test execution.
+     */
     @Test
     public void testSearchShelter() throws Exception{
 
@@ -136,6 +152,10 @@ public class PetAdopterControllerTest {
                 .andExpect(status().isOk());
     }
 
+    /**
+     * Test case to verify searching for pets.
+     * @throws Exception If an error occurs during the test execution.
+     */
     @Test
     public void testSearchPet() throws Exception{
 
@@ -151,6 +171,10 @@ public class PetAdopterControllerTest {
                 .andExpect(status().isOk());
     }
 
+    /**
+     * Test case to verify requesting to adopt a pet.
+     * @throws Exception If an error occurs during the test execution.
+     */
     @Test
     public void testAdoptPetRequest() throws Exception{
         PetAdoptionRequestDto petAdoptionRequestDto = new PetAdoptionRequestDto();
@@ -165,6 +189,10 @@ public class PetAdopterControllerTest {
                 .andExpect(status().isOk());
     }
 
+    /**
+     * Test case to verify retrieving pet information.
+     * @throws Exception If an error occurs during the test execution.
+     */
     @Test
     public void testGetPetInfo() throws Exception{
 
@@ -177,6 +205,10 @@ public class PetAdopterControllerTest {
                 .andExpect(status().isOk());
     }
 
+    /**
+     * Test case to verify searching for lost pets.
+     * @throws Exception If an error occurs during the test execution.
+     */
     @Test
     public void testSearchLostPet() throws Exception{
 
@@ -192,6 +224,10 @@ public class PetAdopterControllerTest {
                 .andExpect(status().isOk());
     }
 
+    /**
+     * Test case to verify retrieving lost pets by user ID.
+     * @throws Exception If an error occurs during the test execution.
+     */
     @Test
     public void testGetLostPetBy() throws Exception{
 
@@ -203,6 +239,10 @@ public class PetAdopterControllerTest {
                 .andExpect(status().isOk());
     }
 
+    /**
+     * Test case to verify updating lost pet details.
+     * @throws Exception If an error occurs during the test execution.
+     */
     @Test
     public void testUpdateLostPetDetails() throws Exception{
         LostPetDto lostPetDto = new LostPetDto();
@@ -215,6 +255,11 @@ public class PetAdopterControllerTest {
                 .andExpect(status().isOk());
 
     }
+
+    /**
+     * Test case to verify that a request exists for adopting a pet when both pet and adopter exist.
+     * @throws Exception If an error occurs during the test execution.
+     */
     @Test
     public void requestExistsBothExistsReturns200() throws Exception {
         long petID = 2L;
@@ -226,6 +271,10 @@ public class PetAdopterControllerTest {
                 .andExpect(status().isOk());
     }
 
+    /**
+     * Test case to verify that a request exists for adopting a pet when the adopter does not exist.
+     * @throws Exception If an error occurs during the test execution.
+     */
     @Test
     public void requestExistsPetAdopterDoesNotExistReturns404() throws Exception {
         long petID = 2L;
@@ -236,7 +285,6 @@ public class PetAdopterControllerTest {
                         .param("petAdopterID", String.valueOf(petAdopterID)))
                 .andExpect(status().isNotFound());
     }
-
 
     /**
      * util function to covert object to json

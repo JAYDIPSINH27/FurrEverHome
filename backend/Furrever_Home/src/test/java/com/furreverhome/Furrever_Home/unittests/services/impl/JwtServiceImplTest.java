@@ -32,6 +32,9 @@ public class JwtServiceImplTest {
     private String validToken;
     private String userName = "test@example.com";
 
+    /**
+     * Sets up the mock objects and initializes test data before each test method.
+     */
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -49,6 +52,9 @@ public class JwtServiceImplTest {
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(testUser));
     }
 
+    /**
+     * Tests refreshing a token successfully.
+     */
     @Test
     void testRefreshTokenSuccessful() {
         RefreshTokenRequest request = new RefreshTokenRequest();
@@ -61,6 +67,9 @@ public class JwtServiceImplTest {
         assertEquals(validToken, response.getRefreshToken());
     }
 
+    /**
+     * Tests refreshing a token when the user is not found.
+     */
     @Test
     void testRefreshTokenUserNotFound() {
         RefreshTokenRequest request = new RefreshTokenRequest();
@@ -77,7 +86,9 @@ public class JwtServiceImplTest {
         assertTrue(exception instanceof RuntimeException); // Use the specific exception class you're throwing
     }
 
-
+    /**
+     * Tests generating a token successfully.
+     */
     @Test
     void testGenerateTokenSuccessful() {
         String token = jwtService.generateToken(userDetails);
@@ -85,6 +96,9 @@ public class JwtServiceImplTest {
         assertFalse(token.isEmpty());
     }
 
+    /**
+     * Tests generating a refresh token successfully.
+     */
     @Test
     void testGenerateRefreshTokenSuccessful() {
         String refreshToken = jwtService.generateRefreshToken(Collections.emptyMap(), userDetails);
@@ -92,12 +106,18 @@ public class JwtServiceImplTest {
         assertFalse(refreshToken.isEmpty());
     }
 
+    /**
+     * Tests extracting a username from a JWT token successfully.
+     */
     @Test
     void testExtractUserNameSuccessful() {
         String extractedUserName = jwtService.extractUserName(validToken);
         assertEquals(userName, extractedUserName);
     }
 
+    /**
+     * Tests validating a token successfully.
+     */
     @Test
     void testIsTokenValidSuccessful() {
         boolean isValid = jwtService.isTokenValid(validToken, userDetails);

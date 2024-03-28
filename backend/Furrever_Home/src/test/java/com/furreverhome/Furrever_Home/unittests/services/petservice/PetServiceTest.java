@@ -1,4 +1,4 @@
-package com.furreverhome.Furrever_Home.unittests.services;
+package com.furreverhome.Furrever_Home.unittests.services.petservice;
 
 import com.furreverhome.Furrever_Home.dto.GenericResponse;
 import com.furreverhome.Furrever_Home.dto.Pet.PetDto;
@@ -38,6 +38,10 @@ public class PetServiceTest {
     @Mock
     private PetVaccinationInfoRepository petVaccinationInfoRepository;
 
+    /**
+     * Test case for retrieving pet information successfully.
+     * Verifies that the correct PetDto object is returned when the pet is found.
+     */
     @Test
     void getPetInfoSuccess() {
         Long petId = 2L;
@@ -49,6 +53,10 @@ public class PetServiceTest {
         assertEquals(petId, petDto.getPetID());
     }
 
+    /**
+     * Test case for retrieving pet information when the pet is not found.
+     * Verifies that a RuntimeException is thrown when the pet is not found.
+     */
     @Test
     void getPetInfoNotFound() {
         Long petId = 2L;
@@ -56,6 +64,10 @@ public class PetServiceTest {
         assertThrows(RuntimeException.class, () -> petService.getPetInfo(petId));
     }
 
+    /**
+     * Test case for adding vaccination details when the pet is not found.
+     * Verifies that a RuntimeException is thrown when attempting to add vaccination details for a non-existent pet.
+     */
     @Test
     void addVaccinationDetailsPetNotFound() throws ParseException {
         Long petID = 2L;
@@ -68,6 +80,10 @@ public class PetServiceTest {
         assertThrows(RuntimeException.class, () -> petService.addVaccinationDetails(petVaccineDto, petID));
     }
 
+    /**
+     * Test case for adding vaccination details when the vaccination already exists for the pet.
+     * Verifies that no new vaccination is added when the vaccination already exists for the pet.
+     */
     @Test
     void addVaccinationDetailsVaccinationExists() throws ParseException {
         Long petID = 2L;
@@ -87,6 +103,10 @@ public class PetServiceTest {
         assertEquals("already present", response.getMessage());
     }
 
+    /**
+     * Test case for adding vaccination details successfully.
+     * Verifies that the vaccination details are successfully added when the pet exists and the vaccination is new.
+     */
     @Test
     void addVaccinationDetailsSuccess() throws ParseException {
         Long petID = 2L;

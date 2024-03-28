@@ -37,6 +37,10 @@ class AuthenticationControllerTest {
         MockitoAnnotations.openMocks(this);
     }
 
+    /**
+     * Tests the {@link AuthenticationController#signin(SigninRequest)} method.
+     * Verifies that the controller returns an HTTP status OK and the expected response body.
+     */
     @Test
     void testSignin() {
         SigninRequest signinRequest = new SigninRequest();
@@ -53,6 +57,10 @@ class AuthenticationControllerTest {
         assertEquals(expectedResponse, responseEntity.getBody());
     }
 
+    /**
+     * Tests the {@link AuthenticationController#refresh(RefreshTokenRequest)} method.
+     * Verifies that the controller returns an HTTP status OK and the expected response body.
+     */
     @Test
     void testRefresh() {
         RefreshTokenRequest refreshTokenRequest = new RefreshTokenRequest();
@@ -69,7 +77,10 @@ class AuthenticationControllerTest {
         assertEquals(expectedResponse, responseEntity.getBody());
     }
 
-
+    /**
+     * Tests the {@link AuthenticationController#verifyByEmail(String)} method.
+     * Verifies that the controller redirects to the login URL after verifying the email.
+     */
     @Test
     void testVerifyByEmail() {
         String email = "test@example.com";
@@ -78,6 +89,11 @@ class AuthenticationControllerTest {
         assertEquals(frontendConfigurationProperties.getLoginUrl(), redirectView.getUrl());
     }
 
+    /**
+     * Tests the {@link AuthenticationController#showChangePasswordPage(String)} method
+     * when the token is invalid.
+     * Verifies that the controller redirects to the login URL with a message indicating an invalid token.
+     */
     @Test
     public void testShowChangePasswordPage_InvalidToken() {
         // Given
@@ -92,6 +108,11 @@ class AuthenticationControllerTest {
         assertEquals("http://example.com/login?message=Invalid+token.", redirectView.getUrl());
     }
 
+    /**
+     * Tests the {@link AuthenticationController#showChangePasswordPage(String)} method
+     * when the token is expired.
+     * Verifies that the controller redirects to the login URL with a message indicating an expired token.
+     */
     @Test
     public void testShowChangePasswordPage_ExpiredToken() {
         // Given
@@ -106,6 +127,11 @@ class AuthenticationControllerTest {
         assertEquals("http://example.com/login?message=Token+has+expired.", redirectView.getUrl());
     }
 
+    /**
+     * Tests the {@link AuthenticationController#showChangePasswordPage(String)} method
+     * when the token is valid.
+     * Verifies that the controller redirects to the update password URL with the valid token.
+     */
     @Test
     public void testShowChangePasswordPage_ValidToken() {
         // Given

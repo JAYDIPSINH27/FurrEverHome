@@ -78,6 +78,11 @@ class AuthenticationServiceImplTest {
         mockUser.setVerified(true);
     }
 
+    /**
+     * Tests the successful signup of a pet adopter.
+     *
+     * @throws MessagingException if an error occurs while sending an email
+     */
     @Test
     void testSuccessfulPetAdopterSignup() throws MessagingException {
         // Arrange
@@ -114,6 +119,11 @@ class AuthenticationServiceImplTest {
                 eq(true));
     }
 
+    /**
+     * Tests the successful signup of a shelter.
+     *
+     * @throws Exception if an error occurs
+     */
     @Test
     void testSuccessfulShelterSignup() throws Exception {
         //Arange
@@ -140,6 +150,9 @@ class AuthenticationServiceImplTest {
                 eq(true));
     }
 
+    /**
+     * Tests signup with an existing email address.
+     */
     @Test
     void testSignupWithExistingEmail() {
         // Arrange
@@ -160,7 +173,10 @@ class AuthenticationServiceImplTest {
         verify(userRepository, never()).save(any(User.class));
     }
 
-
+    /**
+     * Tests the successful sign-in process for a pet adopter.
+     * It verifies that the authentication service correctly generates JWT and refresh tokens.
+     */
     @Test
     void testSigninSuccessForPetAdopter() {
         SigninRequest signinRequest = new SigninRequest();
@@ -190,6 +206,10 @@ class AuthenticationServiceImplTest {
         verify(jwtService).generateRefreshToken(anyMap(), eq(mockUser));
     }
 
+    /**
+     * Tests sign-in with bad credentials.
+     * It verifies that the authentication service correctly throws a BadCredentialsException.
+     */
     @Test
     void testSigninWithBadCredentials() {
         // Arrange
@@ -206,6 +226,10 @@ class AuthenticationServiceImplTest {
         verifyNoInteractions(jwtService);
     }
 
+    /**
+     * Tests sign-in with an unverified user.
+     * It verifies that the authentication service correctly handles unverified users.
+     */
     @Test
     void signinWithUnverifiedUser() {
         mockUser.setVerified(false);
@@ -221,7 +245,10 @@ class AuthenticationServiceImplTest {
         assertFalse(response.getVerified());
     }
 
-
+    /**
+     * Tests verifying a user by email when the user exists and is verified.
+     * It verifies that the authentication service correctly updates the user's verification status.
+     */
     @Test
     void testVerifyByEmailUserExistsUserVerified() {
         // Arrange
@@ -241,6 +268,9 @@ class AuthenticationServiceImplTest {
         verify(userRepository).save(user);
     }
 
+    /**
+     * Tests the verification process for a non-existing user.
+     */
     @Test
     void testVerifyByEmailUserDoesNotExistReturnFalse() {
         // Arrange
@@ -256,6 +286,11 @@ class AuthenticationServiceImplTest {
         verify(userRepository, never()).save(any(User.class));
     }
 
+    /**
+     * Tests the successful password reset process.
+     *
+     * @throws Exception if an error occurs during password reset
+     */
     @Test
     void testResetByEmailSuccessfulReset() throws Exception {
         // Arrange
@@ -276,6 +311,9 @@ class AuthenticationServiceImplTest {
         verify(emailService).sendEmail(eq(email), eq("Password Reset"), anyString(), eq(true));
     }
 
+    /**
+     * Tests the password reset process when the user is not found.
+     */
     @Test
     void testResetByEmailUserNotFound() {
         // Arrange
@@ -289,7 +327,9 @@ class AuthenticationServiceImplTest {
         }, "Expected exception for user not found");
     }
 
-
+    /**
+     * Tests the reset password process with an invalid token.
+     */
     @Test
     void testResetPasswordWithInvalidTokenReturnsErrorMessage() {
         // Arrange
@@ -306,6 +346,9 @@ class AuthenticationServiceImplTest {
         assertEquals(token,response.getMessage());
     }
 
+    /**
+     * Tests the creation of an admin account when no admin account exists.
+     */
     @Test
     public void testWhenNoAdminAccountExistsThenCreateAdminAccount() {
         // Arrange
@@ -318,6 +361,9 @@ class AuthenticationServiceImplTest {
         verify(userRepository, times(1)).save(any(User.class));
     }
 
+    /**
+     * Tests the creation of an admin account when an admin account already exists.
+     */
     @Test
     public void testWhenAdminAccountExistsThenDoNotCreateAdminAccount() {
         // Arrange

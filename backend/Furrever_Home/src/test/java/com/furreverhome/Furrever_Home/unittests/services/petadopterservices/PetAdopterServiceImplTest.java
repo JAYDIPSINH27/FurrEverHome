@@ -46,6 +46,9 @@ public class PetAdopterServiceImplTest {
 
     private Pet pet;
 
+    /**
+     * Sets up the mock objects and initializes test data before each test method.
+     */
     @BeforeEach
     void setup() {
         // Create a dummy user for the shelter
@@ -79,7 +82,9 @@ public class PetAdopterServiceImplTest {
         pet.setShelter(shelter);
     }
 
-
+    /**
+     * Tests getting all shelters.
+     */
     @Test
     void testGetAllShelter() {
         // Mock the shelter list
@@ -97,6 +102,9 @@ public class PetAdopterServiceImplTest {
         verify(shelterRepository, times(1)).findAll();
     }
 
+    /**
+     * Tests getting pet adopter details by ID when the user and pet adopter exist.
+     */
     @Test
     void testGetPetAdopterDetailsByIdSuccess() {
         // Mock the pet adopter
@@ -116,7 +124,9 @@ public class PetAdopterServiceImplTest {
         verify(petAdopterRepository, times(1)).findByUser(user);
     }
 
-
+    /**
+     * Tests getting pet adopter details by ID when the user does not exist.
+     */
     @Test
     void testGetPetAdopterDetailsByIdUserNotFound() {
         // Mock userRepository to return empty
@@ -129,6 +139,9 @@ public class PetAdopterServiceImplTest {
         verify(userRepository, times(1)).findById(anyLong());
     }
 
+    /**
+     * Tests getting pet adopter details by ID when the pet adopter does not exist.
+     */
     @Test
     void testGetPetAdopterDetailsByIdPetAdopterNotFound() {
         // Mock userRepository to return empty
@@ -143,7 +156,9 @@ public class PetAdopterServiceImplTest {
         verify(petAdopterRepository, times(1)).findByUser(user);
     }
 
-
+    /**
+     * Tests searching for shelters.
+     */
     @Test
     void testSearchShelter() {
         // Prepare mock shelter and criteria
@@ -165,7 +180,9 @@ public class PetAdopterServiceImplTest {
         verify(shelterRepository, times(1)).findAll(any(Example.class));
     }
 
-
+    /**
+     * Tests searching for pets.
+     */
     @Test
     void testSearchPet() {
         // Prepare mock shelter and criteria

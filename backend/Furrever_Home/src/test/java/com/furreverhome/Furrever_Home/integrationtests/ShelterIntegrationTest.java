@@ -1,10 +1,12 @@
 package com.furreverhome.Furrever_Home.integrationtests;
 
+import com.furreverhome.Furrever_Home.dto.shelter.RegisterPetRequest;
 import com.furreverhome.Furrever_Home.entities.PetAdopter;
 import com.furreverhome.Furrever_Home.entities.Shelter;
 import com.furreverhome.Furrever_Home.entities.User;
 import com.furreverhome.Furrever_Home.enums.Role;
 import com.furreverhome.Furrever_Home.repository.PetAdopterRepository;
+import com.furreverhome.Furrever_Home.repository.PetRepository;
 import com.furreverhome.Furrever_Home.repository.ShelterRepository;
 import com.furreverhome.Furrever_Home.repository.UserRepository;
 import io.restassured.response.Response;
@@ -20,15 +22,15 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import static io.restassured.RestAssured.given;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 @SpringBootTest
 @ContextConfiguration
 @AutoConfigureMockMvc
 @EnableJpaRepositories("com.furreverhome.Furrever_Home.repository")
-public class AuthenticationIntegrationTest {
-
+public class ShelterIntegrationTest {
     public String serverLink = "http://172.17.0.170:";
     @Value("${server.port}")
     public String port;
@@ -44,6 +46,9 @@ public class AuthenticationIntegrationTest {
     @Autowired
     private ShelterRepository shelterRepository;
 
+    @Autowired
+    private PetRepository petRepository;
+
     User shelterUser;
 
     Shelter shelter;
@@ -51,6 +56,10 @@ public class AuthenticationIntegrationTest {
     User petAdopterUser;
 
     PetAdopter petAdopter;
+
+    /**
+     * Set up the test environment before each test method.
+     */
     @BeforeEach
     public void setup() {
         shelterUser = new User();
@@ -82,6 +91,9 @@ public class AuthenticationIntegrationTest {
         petAdopterRepository.save(petAdopter);
     }
 
+    /**
+     * Clean up the test environment after each test method.
+     */
     @AfterEach
     public void cleanup() {
         petAdopterRepository.delete(petAdopter);
@@ -89,12 +101,12 @@ public class AuthenticationIntegrationTest {
         userRepository.delete(petAdopterUser);
         userRepository.delete(shelterUser);
     }
+
     /**
-     * Tests the sign-in process for a shelter user with successful authentication.
-     * Verifies that a valid token and user role "SHELTER" are returned upon successful sign-in.
+     * Test registering a pet.
      */
     @Test
-    public void testShelterSigninSuccessThenOK(){
+    public void testRegisterPetSuccessThenOK(){
         String requestBody = String.format("{\"email\": \"%s\", \"password\": \"%s\"}", "testshelter@gmail.com", "Jp@32padhiyar");
 
         // Send POST request to login endpoint
@@ -103,19 +115,37 @@ public class AuthenticationIntegrationTest {
                 .body(requestBody)
                 .post(serverLink+port+"/api/auth/signin");
 
+
         String token = response.jsonPath().getString("token");
-        String userRole = response.jsonPath().getString("userRole");
-        assertNotNull(token);
-        assertEquals("SHELTER", userRole);
+        int shelterId = response.jsonPath().getInt("shelterId");
+
+        RegisterPetRequest registerPetRequest = new RegisterPetRequest();
+        registerPetRequest.setShelter(shelterId);
+        registerPetRequest.setGender("male");
+        registerPetRequest.setColour("brown");
+        registerPetRequest.setBreed("dobarman");
+        registerPetRequest.setType("dog");
+
+        // Send POST request to the register pet endpoint Act
+        Response registerPet = given().header("Authorization", "Bearer " + token)
+                .header("Content-Type", "application/json")
+                .body(registerPetRequest)
+                .post(serverLink+port+"/api/shelter/registerPet");
+
+        assertNotNull(registerPet.asString());
+        assertEquals("dog" ,registerPet.jsonPath().getString("type"));
+
+        // data cleanup
+        Long petId = registerPet.jsonPath().getLong("petID");
+        petRepository.deleteById(petId);
     }
 
     /**
-     * Tests the sign-in process for a pet adopter user with successful authentication.
-     * Verifies that a valid token and user role "PETADOPTER" are returned upon successful sign-in.
+     * Test getting pet information.
      */
     @Test
-    public void testPetAdopterSigninSuccessThenOK(){
-        String requestBody = String.format("{\"email\": \"%s\", \"password\": \"%s\"}", "testpetadopter@gmail.com", "Jp@32padhiyar");
+    public void testGetPetInfoSuccessThenOK(){
+        String requestBody = String.format("{\"email\": \"%s\", \"password\": \"%s\"}", "testshelter@gmail.com", "Jp@32padhiyar");
 
         // Send POST request to login endpoint
         Response response = given()
@@ -123,9 +153,37 @@ public class AuthenticationIntegrationTest {
                 .body(requestBody)
                 .post(serverLink+port+"/api/auth/signin");
 
+
         String token = response.jsonPath().getString("token");
-        String userRole = response.jsonPath().getString("userRole");
-        assertNotNull(token);
-        assertEquals("PETADOPTER", userRole);
+        int shelterId = response.jsonPath().getInt("shelterId");
+
+        RegisterPetRequest registerPetRequest = new RegisterPetRequest();
+        registerPetRequest.setShelter(shelterId);
+        registerPetRequest.setGender("male");
+        registerPetRequest.setColour("orange");
+        registerPetRequest.setBreed("pomarian");
+        registerPetRequest.setType("cat");
+
+        // Send POST request to the register pet endpoint Arrange
+        Response registerPet = given().header("Authorization", "Bearer " + token)
+                .header("Content-Type", "application/json")
+                .body(registerPetRequest)
+                .post(serverLink+port+"/api/shelter/registerPet");
+
+
+        // Send Get request to the getPetInfo endpoint Act
+        Response getPetInfo = given().header("Authorization", "Bearer " + token)
+                .pathParam("petID", registerPet.jsonPath().getLong("petID"))
+                .get(serverLink+port+"/api/shelter/{petID}");
+
+        assertNotNull(getPetInfo.asString());
+        assertEquals("cat" , getPetInfo.jsonPath().getString("type"));
+        assertEquals("pomarian" , getPetInfo.jsonPath().getString("breed"));
+        assertEquals("male" , getPetInfo.jsonPath().getString("gender"));
+        assertEquals("orange" , getPetInfo.jsonPath().getString("colour"));
+
+        // data cleanup
+        Long petId = registerPet.jsonPath().getLong("petID");
+        petRepository.deleteById(petId);
     }
 }

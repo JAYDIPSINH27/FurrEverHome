@@ -32,6 +32,9 @@ class AdminServiceImplTest {
         MockitoAnnotations.initMocks(this);
     }
 
+    /**
+     * Test the {@code changeVerifiedStatus} method when approving.
+     */
     @Test
     void testChangeVerifiedStatus_Approve() {
         // Arrange
@@ -58,6 +61,9 @@ class AdminServiceImplTest {
         verify(userRepository, times(1)).save(user);
     }
 
+    /**
+     * Test the {@code changeVerifiedStatus} method when rejecting.
+     */
     @Test
     void testChangeVerifiedStatus_Reject() {
         // Arrange
@@ -84,6 +90,9 @@ class AdminServiceImplTest {
         verify(userRepository, times(1)).save(user);
     }
 
+    /**
+     * Test the {@code changeVerifiedStatus} method when the user is not found.
+     */
     @Test
     void testChangeVerifiedStatus_UserNotFound() {
         // Arrange
@@ -101,6 +110,9 @@ class AdminServiceImplTest {
         verify(userRepository, never()).save(any());
     }
 
+    /**
+     * Test the {@code changeVerifiedStatus} method when the shelter is not found.
+     */
     @Test
     void testChangeVerifiedStatus_ShelterNotFound() {
         // Arrange
