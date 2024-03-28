@@ -97,6 +97,16 @@ The tiles will change according the type of search (pet/shelter).
 * **When:** Adopter searches on animal type, location , breed, etc
 * **Then:** Adopter should see latest results in the tiles based on the search.
 
+### Page for Registration of pets
+This feature is for shelters to register pets
+**Acceptance Criteria:**
+* **Given:** I am logged in as a shelter
+* **When:** I click on register a new pet
+* **Then:** 
+    - I should be able to add all details corresponding to that pet . Details like - What Animal , breed ,
+  color, weight, age, vaccination , description ,images, etc.
+    - I should be able to modify the details if needed or even delete a
+    registered pet.
 
 ### Individual Shelter Page
 **Acceptance Criteria :**
@@ -106,6 +116,36 @@ The tiles will change according the type of search (pet/shelter).
   - Adopters should be routed to the individual shelter page where they can see shelter details & all the pets registered in that particular shelter.
   - Adopter can click on any pet to route to that specific pet's page
 
+### Individual Pet Page
+- There should be a page for viewing individual pet.
+- This can be opened through shelter home page (for shelters) or individual shelter page (for adopters).
+* **Given:** I am a shelter
+* **When:** I click on a pet tile on shelter home page
+* **Then:** I should be routed to individual pet page
+
+
+* **Given:** I am an adopter
+* **When:** I click on a pet tile on a shelter's page
+* **Then:** I should be routed to individual pet page
+
+
+* **Given:** I am an adopter
+* **When:** I click on a pet tile on a search page results (pet tiles)
+* **Then:** I should be routed to individual pet page
+
+**Acceptance Criteria :**
+  - Adopters should be routed to the individual shelter page where they can see shelter details & all the pets registered in that particular shelter.
+  - Adopter can click on any pet to route to that specific pet's page
+  - As an adopter & shelter, I should be able to click on a pet image and route to individual pet page where all the information related to pet is mentioned.
+  - As a shelter, I should have extra features like modifying or deleting this pet listing
+  - I can add vaccination details for the pet and medical background.
+  - I can add specific instructions on caring for this pet.
+  - As an adopter, I should be able to see the shelter details on the right side.
+  - As an adopter, I should be able to send queries to the shelter for adopting pet.
+  - As an adopter, when I adopt a pet from a shelter, this pet should be added to my profile.
+  [Note: How the adopter should contact the shelter is not clear, it would be great if the development team could come up with a solution.]
+
+    
 ### Chat Feature
 User should be able to contact Shelter via chat
 
@@ -114,12 +154,28 @@ User should be able to contact Shelter via chat
 * **When:** I click on a shelter’s page
 * **Then:** I should see a button to chat with shelter I should be able to send a message to the shelter. Shelter can see you msg and respond I can send images in chat as well
 
+### Admin Panel
+There should be an admin role who can accepts or reject the shelter register request.
+**Acceptance Criteria :**
+* **Given:** Admin visits the login page.
+* **When:** Clicks on login from landing page.
+* **Then:**
+  - Admin can see all the pending shelter registration requests.
+  - Admin can see view new registered shelter details to verify.
+
+* **Given:** Approves the shelter registration request.
+* **When:** Admin click on approve button.
+* **Then:** Shelter registration request would be verified.
+* **Given:** Rejects the shelter registration request.
+* **When:** Admin clicks on reject button.
+* **Then:** Shelter registration request would be rejected.
+
 ### Pet vaccination reminders
 User should get vaccination reminders on emails
 **Acceptance Criteria :**
 * **Given:** I am a User 
 * **When:** I have adopted a pet from a shelter
-* **Then:**I will receive timely reminders on my email that my pet’s next vaccination is due on this day
+* **Then:** I will receive timely reminders on my email that my pet’s next vaccination is due on this day
 This reminder will be received a week before the vaccination due date
 
 ### Lost & Found Page
