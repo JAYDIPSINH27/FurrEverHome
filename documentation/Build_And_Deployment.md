@@ -34,7 +34,24 @@ in this path:
 
 ### **Frontend Application**  
 
+For the frontend React application, navigate to the project directory and run the following command to build the application:
 
+```
+npm run build
+```
+
+You will be able to see folder
+```
+dist
+``` 
+You can run preview of this build file by this command
+```bash
+npm run preview
+```
+For running in development environment run the below command
+```bash
+npm run dev
+```
 
 ## Deploying The Application
 
@@ -47,9 +64,78 @@ The deployment process is automated through a CI/CD pipeline, leveraging Docker 
 - SSH access to the deployment server.
 - Docker Hub account for storing Docker images.
 
-### **Deploying Backend**
-The following are the steps to deploy Spring Boot Application using Docker and CI/CD pipeline. Once docker is installed in virtual machine:
+# Furrever Home Deployment Guide
 
+This document provides an overview and instructions for deploying the Furrever Home application using the provided GitLab CI/CD YAML script. The deployment pipeline includes building, testing, quality assurance, publishing Docker images, and deploying these images to the server.
+
+## Overview
+
+The deployment process is divided into multiple stages, each responsible for different aspects of getting the application up and running. These stages ensure the code is not only built but also tested and meets quality standards before being deployed.
+
+### Stages and Their Order of Execution
+
+1. **Build**: Compile and package the application.
+2. **Test**: Execute automated tests to ensure the application functions as expected.
+3. **Quality**: Assess code quality and perform static code analysis.
+4. **Publish**: Build Docker images and push them to a Docker registry.
+5. **Deploy**: Deploy the Docker images to a production environment.
+
+### Jobs
+
+- `build`: Compiles and packages the backend.
+- `build-frontend`: Compiles and bundles the frontend.
+- `test`: Executes the application's automated test suite.
+- `quality`: Analyzes the codebase for code smells, bugs, and vulnerabilities.
+- `publish`: Publishes the backend Docker image.
+- `publish-frontend`: Publishes the frontend Docker image.
+- `deploy`: Deploys the backend application.
+- `deploy-frontend`: Deploys the frontend application.
+
+## Prerequisites
+
+- GitLab runner with Docker and Docker Compose installed.
+- Docker Hub account for storing Docker images.
+- Server with Docker installed for deployment.
+- SSH access to the deployment server.
+
+## Configuration
+
+Ensure the following variables are configured in your GitLab project:
+
+- `DOCKER_HUB_USER`: Your Docker Hub username.
+- `DOCKER_HUB_PWD`: Your Docker Hub password.
+- `SERVER_IP`: IP address of your deployment server.
+- `SERVER_USER`: SSH user for the deployment server.
+- `ID_RSA`: Private SSH key for the `SERVER_USER`, encoded in base64.
+- Deployment and testing specific environment variables like `VITE_BACKEND_TEST_BASE_URL`, `DEVINT_DB_URL`, `PROD_DB_URL`, etc.
+
+### Setting Up SSH Keys
+
+Ensure the deployment server's SSH key is added to the known hosts on the GitLab runner. The private SSH key (`ID_RSA`) should be securely added to the GitLab CI/CD variables.
+
+
+## Deployment Process
+
+To deploy the application, push your code to the GitLab repository. The CI/CD pipeline, defined in the `.gitlab-ci.yml` file, will automatically execute the defined jobs in the order of the stages specified.
+
+### Manual Steps
+
+Some steps might require manual intervention, such as initial setup of environment variables or secrets in the GitLab project, or configuration changes on the Docker Hub or deployment server.
+
+## Troubleshooting
+
+- Check that all required environment variables are correctly set in the GitLab project.
+- Verify the Docker and SSH services are running on the deployment server.
+- Review the GitLab CI/CD pipeline logs for any errors during execution.
+
+## Support
+
+For support with the deployment process or if encountering any issues, please contact the development team or check the GitLab CI/CD documentation for more detailed guidance.
+
+
+### **Deployment Process In Detail**
+- The following are the steps to deploy Spring Boot Application using Docker and CI/CD pipeline. Once docker is installed in virtual machine:
+- This Steps can be found in gitlab yml file.
 
 ### Publishing 
 The publish stage is where our backend application is containerized and pushed to a Docker registry. This process involves several steps and commands, explained below:
@@ -77,42 +163,31 @@ In this command:
 docker push em492028/furrever-backend-api:$IMAGE_TAG
 ```
 
-### Deployment
-The deployment stage is where the newly created Docker image is deployed to our server. This involves a series of steps to ensure that the application is updated securely and efficiently.
-
-**Preparing SSH Connection**
-
-1. **SSH Key Configuration**:
-    - Setting correct permissions for the SSH key to protect it.
-    ```bash
-    chmod 600 $ID_RSA
-    ```
-
-2. **SSH Agent Setup**:
-    - Starting the SSH agent and adding the private SSH key for passwordless server authentication.
-    ```bash
-    eval $(ssh-agent -s)
-    ssh-add $ID_RSA
-    ```
-
-**Deploying the Application**
+### Deploying
 
 1. **Pulling the Latest Docker Image**:
     - Ensures the server uses the latest Docker image for the deployment.
-    ```bash
-    ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker pull em492028/furrever-backend-api:$IMAGE_TAG"
-    ```
+```
+ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker pull em492028/furrever-backend-api:$IMAGE_TAG"
+```
+      
+
 
 2. **Stopping and Removing the Old Container**:
     - Prevents conflicts by stopping and forcibly removing the existing container.
-    ```bash
-    ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker container rm -f $CONTAINER_NAME || true"
-    ```
+      
+```
+ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker container rm -f $CONTAINER_NAME || true"
+```
 
 3. **Running the New Docker Container**:
     - Starts the new container with the specified configuration, including port mappings and environment variables.
-    ```bash
-    ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -p $SERVER_PORT:$SERVER_PORT --name $CONTAINER_NAME --restart=always -e SERVER_PORT=$SERVER_PORT -e SPRING_DATASOURCE_URL=$DB_URL -e SPRING_DATASOURCE_USERNAME=$DB_USER -e SPRING_DATASOURCE_PASSWORD=$DB_PASSWORD em492028/furrever-backend-api:$IMAGE_TAG"
-    ```
+      
+```
+ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -p $SERVER_PORT:$SERVER_PORT --name $CONTAINER_NAME --restart=always -e SERVER_PORT=$SERVER_PORT -e SPRING_DATASOURCE_URL=$DB_URL -e SPRING_DATASOURCE_USERNAME=$DB_USER -e SPRING_DATASOURCE_PASSWORD=$DB_PASSWORD em492028/furrever-backend-api:$IMAGE_TAG"
+```
 
-### Deploying Frontend
+[**Go back to README.md**](../README.md)
+
+
+
