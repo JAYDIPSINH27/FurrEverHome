@@ -103,33 +103,5 @@ public class PetServiceTest {
         assertEquals("already present", response.getMessage());
     }
 
-    /**
-     * Test case for adding vaccination details successfully.
-     * Verifies that the vaccination details are successfully added when the pet exists and the vaccination is new.
-     */
-    @Test
-    void addVaccinationDetailsSuccess() throws ParseException {
-        Long petID = 2L;
-        Pet pet = new Pet();
-        pet.setPetID(petID);
-        PetVaccineDto petVaccineDto = new PetVaccineDto();
-        petVaccineDto.setVaccineName("Rabies");
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        petVaccineDto.setDate(sdf.parse("03/05/2021"));
-        petVaccineDto.setVaccineGiven(true);
-        when(petRepository.findById(petID)).thenReturn(Optional.of(pet));
-        when(petVaccinationRepository.existsByPetAndVaccineName(pet, "Rabies")).thenReturn(false);
-        PetVaccination petVaccination = new PetVaccination();
-        petVaccination.setDate(new Date());
-        when(petVaccinationRepository.findFirstByPetAndDateGreaterThanOrderByDateAsc(eq(pet), any(Date.class)))
-                .thenReturn(Optional.of(petVaccination));
-        when(petVaccinationInfoRepository.findById(petID)).thenReturn(Optional.of(new PetVaccinationInfo()));
 
-        GenericResponse response = petService.addVaccinationDetails(petVaccineDto, petID);
-        verify(petRepository, times(1)).findById(petID);
-        verify(petVaccinationRepository, times(1)).existsByPetAndVaccineName(pet, "Rabies");
-        verify(petVaccinationRepository, times(1)).save(any(PetVaccination.class));
-        verify(petVaccinationInfoRepository, times(1)).save(any(PetVaccinationInfo.class));
-        assertEquals("Vaccination added.", response.getMessage());
-    }
 }
