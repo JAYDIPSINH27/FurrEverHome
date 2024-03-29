@@ -9,6 +9,7 @@ import com.furreverhome.Furrever_Home.entities.PetVaccinationInfo;
 import com.furreverhome.Furrever_Home.repository.PetRepository;
 import com.furreverhome.Furrever_Home.repository.PetVaccinationInfoRepository;
 import com.furreverhome.Furrever_Home.repository.PetVaccinationRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,8 +69,7 @@ public class PetServiceImpl implements PetService {
                 petVaccination.setVaccineName(petVaccineDto.getVaccineName());
                 petVaccination.setDate(petVaccineDto.getDate());
                 petVaccination.setVaccineGiven(petVaccineDto.isVaccineGiven());
-                petVaccinationRepository.save(petVaccination);
-                updatePetVaccinationNotificationInfo(pet);
+                petVaccinationRepository.save(petVaccination);              
                 return new GenericResponse("Vaccination added.");
             }
         } else {
@@ -93,7 +93,9 @@ public class PetServiceImpl implements PetService {
             PetVaccinationInfo petVaccinationInfo = petVaccinationInfoRepository.findById(pet.getPetID())
                     .orElse(new PetVaccinationInfo()); // Create a new one if not found
 
-            petVaccinationInfo.setPetID(pet.getPetID()); // This is redundant for an update, but necessary for an insert
+            petVaccinationInfo.setPetID(pet.getPetID());
+           
+//            petVaccinationInfo.setPet(pet); // This correctly links the PetVaccinationInfo to the Pet.
             LocalDate nextVaccinationDate = nextVaccination.getDate().toInstant()
                     .atZone(ZoneId.systemDefault())
                     .toLocalDate();
@@ -131,19 +133,4 @@ public class PetServiceImpl implements PetService {
         return petDto;
     }
 
-//    private PetResponseDto mapPetToDto(Pet pet) {
-//        PetResponseDto petResponseDto = new PetResponseDto();
-//        petResponseDto.setPetId(pet.getPetID());
-//        petResponseDto.setType(pet.getType());
-//        petResponseDto.setBreed(pet.getBreed());
-//        petResponseDto.setColor(pet.getColour());
-//        petResponseDto.setGender(pet.getGender());
-//        petResponseDto.setBirthdate(pet.getBirthdate());
-//        petResponseDto.setPetImage(pet.getPetImage());
-//        petResponseDto.setShelterName(shelter.getName());
-//        petResponseDto.setShelterCity(shelter.getCity());
-//        petResponseDto.setShelterContact(shelter.getContact());
-//        petResponseDto.setAdopted(pet.isAdopted());
-//        return petResponseDto;
-//    }
 }

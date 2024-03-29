@@ -35,6 +35,13 @@ const AddVaccine = ({petId}) => {
         const newData = { ...formData }
         newData[event.target.id] = event.target.value
 
+        if(event.target.id === "vaccineGiven" && event.target.value === "true"){
+            newData[event.target.id] = true
+        }else if(event.target.id === "vaccineGiven" && event.target.value === "false"){
+            newData[event.target.id] = false
+        }
+
+        console.log(newData)
         setFormData(newData)
     }
 
@@ -114,7 +121,7 @@ const AddVaccine = ({petId}) => {
                                    Is Vaccine given or not ?
                                 </label>
                                 <div className="mt-1">
-                                    <select name="adopted" id="adopted" value={formData.vaccineGiven} onChange={handleChange}>
+                                    <select name="vaccineGiven" id="vaccineGiven" value={formData.vaccineGiven} onChange={handleChange}>
                                         <option value="true">Yes</option>
                                         <option value="false">No</option>
                                     </select>
