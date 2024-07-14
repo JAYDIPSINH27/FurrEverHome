@@ -1,0 +1,19 @@
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY package.json .
+
+RUN npm install
+
+COPY . .
+
+ARG VITE_BACKEND_BASE_URL
+ARG FRONTEND_APP_PORT
+ENV VITE_BACKEND_BASE_URL=$VITE_BACKEND_BASE_URL
+ENV FRONTEND_APP_PORT=$FRONTEND_APP_PORT
+RUN npm run build
+
+EXPOSE 3000
+
+CMD [ "npm", "run", "preview" ]

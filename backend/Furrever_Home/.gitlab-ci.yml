@@ -1,0 +1,92 @@
+# List of stages for jobs, and their order of execution
+stages:
+  - build
+  - test
+  # - quality
+  - publish
+  - deploy
+
+build:
+  stage: build
+  image: maven:latest
+  script:
+    - cd backend/Furrever_Home
+    - mvn clean package
+    - ls -l target/
+  artifacts:
+    paths:
+      - backend/Furrever_Home/target/*.jar
+
+test:
+  stage: test
+  image: maven:latest
+  script:
+    - cd backend/Furrever_Home
+    - mvn test
+
+# quality:
+#   stage: quality
+#   image: openjdk:11
+#   script:
+#     - echo "Compiling the project"
+#     - mkdir smells/
+#     - java -jar $CI_PROJECT_DIR/.gitlab/DesigniteJava.jar -i $CI_PROJECT_DIR -o $CI_PROJECT_DIR/smells/ -d
+#   artifacts:
+#     paths:
+#       - smells/
+#       - $CI_PROJECT_DIR
+
+publish:
+  image: docker:latest
+  stage: publish
+  tags:
+    - furrever-gl-runner
+  variables:
+    # these values may need to be different if using TLS, k8s, etc.
+    # You can alternatively set defaults in your runner config
+    DOCKER_TLS_CERTDIR: ""
+    DOCKER_HOST: "tcp://docker:2375"
+  services:
+    - docker:dind
+  script:
+    - cd backend/Furrever_Home
+    - pwd
+    - ls
+    - echo $SERVER_IP
+    - docker --version
+    - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PWD docker.io
+    - IMAGE_TAG="$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA"
+    - docker build -t em492028/furrever-backend-api:$IMAGE_TAG .
+    - docker push em492028/furrever-backend-api:$IMAGE_TAG
+
+deploy:
+  image: alpine:latest
+  stage: deploy
+  tags:
+    - furrever-gl-runner
+  before_script:
+    - apk update && apk add openssh-client
+    - eval $(ssh-agent -s)
+    - chmod 600 $ID_RSA
+    - ssh-add $ID_RSA
+  script:
+    - CONTAINER_NAME=""
+    - SERVER_PORT=""
+    - DB_URL=""
+    - DB_USER=""
+    - DB_PASSWORD=""
+    - IMAGE_TAG="$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA"
+    - if [ "$CI_COMMIT_REF_NAME" == "dev" ]; then CONTAINER_NAME="furrever-dev-app"; SERVER_PORT=8080; DB_URL=$DEVINT_DB_URL; DB_USER=$DEVINT_DB_USER; DB_PASSWORD=$DEVINT_DB_PASSWORD; fi
+    - if [ "$CI_COMMIT_REF_NAME" == "main" ]; then CONTAINER_NAME="furrever-prod-app"; SERVER_PORT=8073; DB_URL=$PROD_DB_URL; DB_USER=$PROD_DB_USER; DB_PASSWORD=$PROD_DB_PASSWORD; fi
+    - if [ "$CI_COMMIT_REF_NAME" != "main" ] && [ "$CI_COMMIT_REF_NAME" != "dev" ]; then CONTAINER_NAME="furrever-test-app"; SERVER_PORT=8000; DB_URL=$TEST_DB_URL; DB_USER=$TEST_DB_USER; DB_PASSWORD=$TEST_DB_PASSWORD; fi
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PWD docker.io"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker pull em492028/furrever-backend-api:$IMAGE_TAG"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker container rm -f $CONTAINER_NAME || true"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -p $SERVER_PORT:$SERVER_PORT --name $CONTAINER_NAME --restart=always -e SERVER_PORT=$SERVER_PORT -e SPRING_DATASOURCE_URL=$DB_URL -e SPRING_DATASOURCE_USERNAME=$DB_USER -e SPRING_DATASOURCE_PASSWORD=$DB_PASSWORD -e EMAIL_HOST=$EMAIL_HOST -e EMAIL_PORT=$EMAIL_PORT -e EMAIL_USERNAME=$EMAIL_USERNAME -e EMAIL_PASSWORD=$EMAIL_PASSWORD em492028/furrever-backend-api:$IMAGE_TAG"
+  environment:
+    name: development
+    url: http://172.17.0.170:$SERVER_PORT
+  only:
+    - branches
+
+
